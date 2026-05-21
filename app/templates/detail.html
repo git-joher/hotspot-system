@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% block title %}热点详情{% endblock %}
+{% block title %}{{ t('app_name') }}{% endblock %}
 
 {% block content %}
 <main class="detail" id="detail-page">
-    <a href="/" class="back-link">返回首页</a>
+    <a href="/" class="back-link">← {{ t('back') }}</a>
     <div class="detail-header" id="detail-header">
-        <span class="spinner">加载中...</span>
+        <span class="spinner">{{ t('loading') }}</span>
     </div>
     <div class="detail-summary" id="detail-summary"></div>
     <div class="detail-impact" id="detail-impact"></div>
     <div class="detail-grid">
-        <div class="chart-box"><h3>热度变化曲线</h3><div class="chart" id="chart-timeline"></div></div>
-        <div class="sources-box" id="sources-box"><h3>各平台覆盖</h3><div id="sources-list"></div></div>
+        <div class="chart-box"><h3>{{ t('detail_heat_timeline') }}</h3><div class="chart" id="chart-timeline"></div></div>
+        <div class="sources-box" id="sources-box"><h3>{{ t('detail_sources') }}</h3><div id="sources-list"></div></div>
     </div>
-    <div class="related-box" id="related-box"><h3>相关事件</h3><div id="related-list"></div></div>
+    <div class="related-box" id="related-box"><h3>{{ t('detail_related') }}</h3><div id="related-list"></div></div>
 </main>
 {% endblock %}
 {% block scripts %}

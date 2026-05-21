@@ -16,9 +16,13 @@ CREATE TABLE IF NOT EXISTS events (
     language TEXT DEFAULT 'unknown',
     region TEXT DEFAULT 'unknown',
     title_cn TEXT DEFAULT '',
+    title_en TEXT DEFAULT '',
     summary_cn TEXT DEFAULT '',
+    summary_en TEXT DEFAULT '',
     impact_points TEXT DEFAULT '',
+    impact_points_en TEXT DEFAULT '',
     personal_impact TEXT DEFAULT '',
+    personal_impact_en TEXT DEFAULT '',
     entities TEXT DEFAULT '',
     first_seen_at TEXT NOT NULL,
     last_updated_at TEXT NOT NULL
@@ -41,11 +45,15 @@ CREATE INDEX IF NOT EXISTS idx_snapshots_event_time
 CREATE TABLE IF NOT EXISTS predictions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     event_title TEXT NOT NULL,
+    event_title_en TEXT DEFAULT '',
     timeframe TEXT DEFAULT '',
     scenario TEXT NOT NULL,
+    scenario_en TEXT DEFAULT '',
     probability REAL DEFAULT 0.0,
     probability_label TEXT DEFAULT '',
+    probability_label_en TEXT DEFAULT '',
     reasoning TEXT DEFAULT '',
+    reasoning_en TEXT DEFAULT '',
     entities TEXT DEFAULT '',
     wealth_rank INTEGER DEFAULT 0,
     created_at TEXT NOT NULL,
@@ -91,6 +99,17 @@ def get_db() -> sqlite3.Connection:
 
 def init_db(conn: sqlite3.Connection) -> None:
     conn.executescript(SCHEMA)
+    # Migrations for existing databases
+    for col in ["title_en", "summary_en", "impact_points_en", "personal_impact_en"]:
+        try:
+            conn.execute(f"ALTER TABLE events ADD COLUMN {col} TEXT DEFAULT ''")
+        except sqlite3.OperationalError:
+            pass
+    for col in ["event_title_en", "scenario_en", "probability_label_en", "reasoning_en"]:
+        try:
+            conn.execute(f"ALTER TABLE predictions ADD COLUMN {col} TEXT DEFAULT ''")
+        except sqlite3.OperationalError:
+            pass
     conn.commit()
 
 
@@ -98,9 +117,13 @@ def insert_event(conn: sqlite3.Connection, data: dict) -> int:
     now = datetime.utcnow().isoformat()
     conn.execute("""
         INSERT INTO events (title, description, url, source_platform, language, region,
-                           title_cn, summary_cn, impact_points, personal_impact, entities, first_seen_at, last_updated_at)
+                           title_cn, title_en, summary_cn, summary_en,
+                           impact_points, impact_points_en, personal_impact, personal_impact_en,
+                           entities, first_seen_at, last_updated_at)
         VALUES (:title, :description, :url, :source_platform, :language, :region,
-                :title_cn, :summary_cn, :impact_points, :personal_impact, :entities, :first_seen_at, :last_updated_at)
+                :title_cn, :title_en, :summary_cn, :summary_en,
+                :impact_points, :impact_points_en, :personal_impact, :personal_impact_en,
+                :entities, :first_seen_at, :last_updated_at)
     """, {
         "title": data["title"],
         "description": data.get("description", ""),
@@ -109,9 +132,13 @@ def insert_event(conn: sqlite3.Connection, data: dict) -> int:
         "language": data.get("language", "unknown"),
         "region": data.get("region", "unknown"),
         "title_cn": data.get("title_cn", ""),
+        "title_en": data.get("title_en", ""),
         "summary_cn": data.get("summary_cn", ""),
+        "summary_en": data.get("summary_en", ""),
         "impact_points": data.get("impact_points", ""),
+        "impact_points_en": data.get("impact_points_en", ""),
         "personal_impact": data.get("personal_impact", ""),
+        "personal_impact_en": data.get("personal_impact_en", ""),
         "entities": data.get("entities", ""),
         "first_seen_at": data.get("first_seen_at", now),
         "last_updated_at": data.get("last_updated_at", now),
@@ -279,9 +306,9 @@ def search_events(conn: sqlite3.Connection, query: str, limit: int = 50) -> list
     q = f"%{query}%"
     rows = conn.execute("""
         SELECT * FROM events
-        WHERE title LIKE ? OR title_cn LIKE ? OR description LIKE ?
+        WHERE title LIKE ? OR title_cn LIKE ? OR title_en LIKE ? OR description LIKE ?
         ORDER BY last_updated_at DESC LIMIT ?
-    """, [q, q, q, limit]).fetchall()
+    """, [q, q, q, q, limit]).fetchall()
     return [dict(r) for r in rows]
 
 
@@ -297,7 +324,7 @@ def link_events(conn: sqlite3.Connection, event_a_id: int, event_b_id: int,
 def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24) -> list[dict]:
     since = (datetime.utcnow() - timedelta(hours=hours)).isoformat()
     rows = conn.execute("""
-        SELECT id, title_cn, title, entities FROM events
+        SELECT id, title_cn, title_en, title, entities FROM events
         WHERE last_updated_at >= ? AND entities != '' AND entities != '[]'
     """, [since]).fetchall()
 
@@ -317,10 +344,14 @@ def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24) -> list[dic
             if not name:
                 continue
             ent_type = item.get("type", "")
+            type_en = item.get("type_en", ent_type)
+            entity_cn = item.get("entity_cn", name)
             if name not in entity_map:
                 entity_map[name] = {
                     "entity": name,
+                    "entity_cn": entity_cn,
                     "type": ent_type,
+                    "type_en": type_en,
                     "total_impact": 0.0,
                     "mention_count": 0,
                     "positive_count": 0,
@@ -329,6 +360,9 @@ def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24) -> list[dic
                     "actions": [],
                     "events": [],
                 }
+            # Keep the most recent entity_cn
+            if entity_cn and entity_cn != name:
+                entity_map[name]["entity_cn"] = entity_cn
             entity_map[name]["type_votes"][ent_type] = entity_map[name]["type_votes"].get(ent_type, 0) + 1
             score = float(item.get("impact_score", 0))
             direction = item.get("direction", "neutral")
@@ -344,9 +378,11 @@ def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24) -> list[dic
             entity_map[name]["events"].append({
                 "id": row["id"],
                 "title": row["title_cn"] or row["title"],
+                "title_en": row["title_en"] or row["title"],
                 "impact_score": score,
                 "direction": direction,
                 "action": action,
+                "action_en": item.get("action_en", ""),
             })
 
     investable_types = {"股票", "公司", "行业", "板块", "加密货币", "ETF", "基金", "商品", "外汇"}
@@ -357,6 +393,10 @@ def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24) -> list[dic
         if data["type_votes"]:
             data["type"] = max(data["type_votes"], key=data["type_votes"].get)
         del data["type_votes"]
+        # Ensure type_en is set
+        if not data.get("type_en") or data["type_en"] == data["type"]:
+            # Try to infer English type from Chinese
+            data["type_en"] = data["type"]
 
         is_investable = data.get("type", "") in investable_types
 
@@ -365,23 +405,29 @@ def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24) -> list[dic
             if is_investable:
                 data["signal"] = "buy"
                 data["signal_label"] = "买入"
+                data["signal_label_en"] = "Buy"
             else:
                 data["signal"] = "rising"
                 data["signal_label"] = "高涨"
+                data["signal_label_en"] = "Rising"
         elif avg < -0.2:
             if is_investable:
                 data["signal"] = "sell"
                 data["signal_label"] = "卖出"
+                data["signal_label_en"] = "Sell"
             else:
                 data["signal"] = "falling"
                 data["signal_label"] = "低落"
+                data["signal_label_en"] = "Falling"
         else:
             if is_investable:
                 data["signal"] = "hold"
                 data["signal_label"] = "观望"
+                data["signal_label_en"] = "Hold"
             else:
                 data["signal"] = "stable"
                 data["signal_label"] = "平稳"
+                data["signal_label_en"] = "Stable"
         data["avg_impact"] = round(avg, 2)
         data["total_impact"] = round(data["total_impact"], 2)
         if data["actions"]:
@@ -407,17 +453,23 @@ def replace_predictions(conn: sqlite3.Connection, predictions: list[dict]) -> in
         elif not isinstance(entities_val, str):
             entities_val = "[]"
         conn.execute("""
-            INSERT INTO predictions (event_title, timeframe, scenario, probability,
-                probability_label, reasoning, entities, wealth_rank, created_at, expires_at)
-            VALUES (:event_title, :timeframe, :scenario, :probability,
-                :probability_label, :reasoning, :entities, :wealth_rank, :created_at, :expires_at)
+            INSERT INTO predictions (event_title, event_title_en, timeframe, scenario, scenario_en,
+                probability, probability_label, probability_label_en, reasoning, reasoning_en,
+                entities, wealth_rank, created_at, expires_at)
+            VALUES (:event_title, :event_title_en, :timeframe, :scenario, :scenario_en,
+                :probability, :probability_label, :probability_label_en, :reasoning, :reasoning_en,
+                :entities, :wealth_rank, :created_at, :expires_at)
         """, {
             "event_title": p.get("event_title", ""),
+            "event_title_en": p.get("event_title_en", ""),
             "timeframe": p.get("timeframe", ""),
             "scenario": p.get("scenario", ""),
+            "scenario_en": p.get("scenario_en", ""),
             "probability": p.get("probability", 0.0),
             "probability_label": p.get("probability_label", ""),
+            "probability_label_en": p.get("probability_label_en", ""),
             "reasoning": p.get("reasoning", ""),
+            "reasoning_en": p.get("reasoning_en", ""),
             "entities": entities_val,
             "wealth_rank": p.get("wealth_rank", 0),
             "created_at": now,

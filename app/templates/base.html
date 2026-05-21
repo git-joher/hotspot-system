@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Hotspot · 全球热点雷达{% endblock %}</title>
+    <title>{% block title %}{{ t('app_name') }}{% endblock %}</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
     <link rel="stylesheet" href="/static/css/style.css">
     {% block head %}{% endblock %}
@@ -11,17 +11,26 @@
 <body>
     <div class="app">
         <header class="topbar">
-            <h1 class="logo"><a href="/">Hotspot · 全球热点雷达</a></h1>
+            <h1 class="logo"><a href="/">{{ t('app_name') }}</a></h1>
             <nav class="tabs" id="time-tabs">
-                <button class="tab active" data-timespan="realtime">实时</button>
-                <button class="tab" data-timespan="hourly">每小时</button>
-                <button class="tab" data-timespan="daily">每日</button>
-                <button class="tab" data-timespan="ondemand">按需刷新</button>
+                <button class="tab active" data-timespan="realtime">{{ t('tab_realtime') }}</button>
+                <button class="tab" data-timespan="hourly">{{ t('tab_hourly') }}</button>
+                <button class="tab" data-timespan="daily">{{ t('tab_daily') }}</button>
+                <button class="tab" data-timespan="ondemand">⟳</button>
             </nav>
-            <span class="update-time" id="update-time">加载中...</span>
+            <div class="topbar-right">
+                <button class="lang-switch" id="lang-switch" onclick="toggleLang()">
+                    {% if lang == 'zh' %}EN{% else %}中文{% endif %}
+                </button>
+                <span class="update-time" id="update-time">{{ t('loading') }}</span>
+            </div>
         </header>
         {% block content %}{% endblock %}
     </div>
+    <script>
+        window.I18N_DATA = {{ i18n_data | tojson }};
+    </script>
+    <script src="/static/js/i18n.js"></script>
     <script src="/static/js/dashboard.js"></script>
     {% block scripts %}{% endblock %}
 </body>

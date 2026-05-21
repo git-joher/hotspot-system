@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request, Query
+from fastapi.responses import JSONResponse
 from app.database import (get_db, get_events_by_timespan, get_event_with_snapshots,
                           get_stats, search_events, get_entity_aggregates,
                           replace_predictions, get_predictions)
@@ -108,3 +109,12 @@ async def api_refresh_predictions(request: Request):
         return {"status": "empty", "count": 0, "predictions": []}
     finally:
         conn.close()
+
+
+@router.post("/lang/{lang}")
+async def api_set_lang(lang: str):
+    if lang not in ("zh", "en"):
+        return JSONResponse({"status": "error", "message": "Invalid language"}, status_code=400)
+    resp = JSONResponse({"status": "ok", "lang": lang})
+    resp.set_cookie("lang", lang, max_age=365 * 24 * 3600)
+    return resp

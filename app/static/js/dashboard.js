@@ -2,6 +2,18 @@ let currentTimespan = 'realtime';
 let currentSort = 'heat';
 let currentCategory = null;
 
+// Pick bilingual field based on current language
+function _bilingual(cnVal, enVal, fallbackVal) {
+    const lang = window.I18N.getLang();
+    if (lang === 'en') {
+        const en = (enVal && enVal !== '[]') ? enVal : '';
+        const cn = (cnVal && cnVal !== '[]') ? cnVal : '';
+        return en || cn || fallbackVal || '';
+    }
+    const cn = (cnVal && cnVal !== '[]') ? cnVal : '';
+    return cn || fallbackVal || '';
+}
+
 // --- Tab switching ---
 document.getElementById('time-tabs').addEventListener('click', (e) => {
     if (!e.target.classList.contains('tab')) return;
@@ -24,6 +36,13 @@ document.addEventListener('click', (e) => {
     loadDashboard();
 });
 
+// --- Language toggle ---
+window.toggleLang = async function() {
+    const newLang = window.I18N.getLang() === 'zh' ? 'en' : 'zh';
+    await window.I18N.setLang(newLang);
+    location.reload();
+};
+
 // --- Load dashboard ---
 async function loadDashboard() {
     await Promise.all([loadStats(), loadMainList(), loadCharts()]);
@@ -32,11 +51,11 @@ async function loadDashboard() {
 async function loadStats() {
     const resp = await fetch('/api/stats');
     const data = await resp.json();
-    document.getElementById('stat-total').textContent = data.total_events + ' 条';
-    document.getElementById('stat-rising').textContent = data.rising_count + ' 条';
-    document.getElementById('stat-regions').textContent = data.region_count + ' 大地区';
-    document.getElementById('stat-categories').textContent = data.category_count + ' 个';
-    document.getElementById('update-time').textContent = '⏱ 更新于 ' + new Date().toLocaleTimeString();
+    document.getElementById('stat-total').textContent = data.total_events + ' ' + _t('items');
+    document.getElementById('stat-rising').textContent = data.rising_count + ' ' + _t('items');
+    document.getElementById('stat-regions').textContent = data.region_count + ' ' + _t('regions');
+    document.getElementById('stat-categories').textContent = data.category_count + ' ' + _t('categories');
+    document.getElementById('update-time').textContent = _t('updated_at') + ' ' + new Date().toLocaleTimeString();
 }
 
 function parseJsonField(val) {
@@ -65,15 +84,15 @@ async function loadEvents() {
     const data = await resp.json();
     const container = document.getElementById('events-list');
     if (!data.events.length) {
-        container.innerHTML = '<div class="loading">暂无热点数据</div>';
+        container.innerHTML = '<div class="loading">' + _t('no_data') + '</div>';
         return;
     }
     container.innerHTML = data.events.map((e, i) => {
         const heatClass = e.latest_heat > 80 ? 'high' : e.latest_heat > 50 ? 'mid' : '';
         const rankClass = i < 3 ? 'r' + (i+1) : (i < 5 ? 'r' + (i+1) : '');
         const trend = e.latest_trend === 'rising' ? ' ↑' : e.latest_trend === 'falling' ? ' ↓' : '';
-        const impactPoints = parseJsonField(e.impact_points);
-        const personalImpact = parseJsonField(e.personal_impact);
+        const impactPoints = parseJsonField(_bilingual(e.impact_points, e.impact_points_en));
+        const personalImpact = parseJsonField(_bilingual(e.personal_impact, e.personal_impact_en));
         const entities = parseJsonField(e.entities);
         const hasExpand = impactPoints.length > 0 || personalImpact.length > 0 || entities.length > 0;
 
@@ -81,7 +100,7 @@ async function loadEvents() {
             '<span class="event-rank ' + rankClass + '">' + (i + 1) + '</span>' +
             '<div class="event-info">' +
             '<div class="event-title-row">' +
-            '<span class="event-title-link" onclick="location.href=\'/event/' + e.id + '\'">' + escapeHtml(e.title_cn || e.title) + trend + '</span>';
+            '<span class="event-title-link" onclick="location.href=\'/event/' + e.id + '\'">' + escapeHtml(_bilingual(e.title_cn, e.title_en, e.title)) + trend + '</span>';
         if (hasExpand) {
             html += '<button class="expand-toggle" data-eid="' + e.id + '" onclick="toggleExpand(event, ' + e.id + ')">▶</button>';
         }
@@ -96,19 +115,19 @@ async function loadEvents() {
         if (hasExpand) {
             html += '<div class="event-expand" id="expand-' + e.id + '" style="display:none">';
             if (impactPoints.length > 0) {
-                html += '<div class="expand-section"><span class="expand-label">关键影响</span>';
+                html += '<div class="expand-section"><span class="expand-label">' + _t('expand_impact') + '</span>';
                 html += impactPoints.map(p => '<span class="impact-chip">' + escapeHtml(p) + '</span>').join('');
                 html += '</div>';
             }
             if (personalImpact.length > 0) {
-                html += '<div class="expand-section"><span class="expand-label">💰 财富机会</span>';
+                html += '<div class="expand-section"><span class="expand-label">💰 ' + _t('expand_wealth') + '</span>';
                 html += personalImpact.map((p, j) => '<div class="pi-item"><span class="pi-rank">#' + (j + 1) + '</span>' + escapeHtml(p) + '</div>').join('');
                 html += '</div>';
             }
             if (entities.length > 0) {
-                html += '<div class="expand-section"><span class="expand-label">🎯 关联实体</span>';
+                html += '<div class="expand-section"><span class="expand-label">🎯 ' + _t('expand_entities') + '</span>';
                 html += entities.map(en => '<span class="entity-chip entity-chip-' + (en.direction || 'neutral') + '">' +
-                    escapeHtml(en.entity || '') + ' <small>' + escapeHtml(en.action || '') + '</small></span>').join('');
+                    escapeHtml(en.entity || '') + ' <small>' + escapeHtml(_bilingual(en.action, en.action_en, '')) + '</small></span>').join('');
                 html += '</div>';
             }
             html += '</div>';
@@ -117,7 +136,7 @@ async function loadEvents() {
         html += '</div>' +
             '<div class="event-meta">' +
             '<span class="event-heat ' + heatClass + '">🔥 ' + (e.latest_heat || '-') + '</span>' +
-            '<span class="event-platforms">' + (e.related_count || 1) + ' 平台</span>' +
+            '<span class="event-platforms">' + (e.related_count || 1) + ' ' + _t('platforms') + '</span>' +
             '</div>' +
             '</div>';
         return html;
@@ -130,7 +149,7 @@ async function loadEntityList() {
     const data = await resp.json();
     const container = document.getElementById('events-list');
     if (!data.entities.length) {
-        container.innerHTML = '<div class="loading">暂无实体影响数据 — 需要更多已分析的事件</div>';
+        container.innerHTML = '<div class="loading">' + _t('no_entity_data') + '</div>';
         return;
     }
     container.innerHTML = data.entities.map((en, i) => {
@@ -144,29 +163,29 @@ async function loadEntityList() {
             '<span class="event-rank ' + rankClass + '">' + (i + 1) + '</span>' +
             '<div class="event-info">' +
             '<div class="event-title-row">' +
-            '<span class="entity-main-name">' + escapeHtml(en.entity) + '</span>' +
-            '<span class="entity-main-type">' + escapeHtml(en.type) + '</span>' +
-            '<span class="entity-main-sig ' + sigClass + '">' + sigIcon + ' ' + en.signal_label + '</span>';
+            '<span class="entity-main-name">' + escapeHtml(_bilingual(en.entity_cn, en.entity, '')) + '</span>' +
+            '<span class="entity-main-type">' + escapeHtml(_bilingual(en.type, en.type_en, '')) + '</span>' +
+            '<span class="entity-main-sig ' + sigClass + '">' + sigIcon + ' ' + escapeHtml(_bilingual(en.signal_label, en.signal_label_en, '')) + '</span>';
         if (hasEvents) {
             html += '<button class="expand-toggle" data-eid="ent-' + i + '" onclick="toggleExpand(event, \'ent-' + i + '\')">▶</button>';
         }
         html += '</div>' +
             '<div class="entity-main-stats">' +
-            '<span>综合影响: <strong>' + impactStr + '</strong></span>' +
-            '<span>涉及 ' + en.mention_count + ' 条热点</span>' +
-            '<span>利好' + en.positive_count + ' / 利空' + en.negative_count + '</span>' +
+            '<span>' + _t('comprehensive_impact') + ': <strong>' + impactStr + '</strong></span>' +
+            '<span>' + en.mention_count + ' ' + _t('mentions') + '</span>' +
+            '<span>' + _t('positive_negative') + en.positive_count + ' / ' + en.negative_count + '</span>' +
             '</div>';
 
         if (hasEvents) {
             html += '<div class="event-expand" id="expand-ent-' + i + '" style="display:none">';
-            html += '<div class="expand-section"><span class="expand-label">来源事件</span>';
+            html += '<div class="expand-section"><span class="expand-label">' + _t('source_events') + '</span>';
             html += en.events.map(ev => {
                 const evIcon = ev.direction === 'negative' ? '📉' : ev.direction === 'positive' ? '📈' : '➖';
                 const evScore = (ev.impact_score > 0 ? '+' : '') + ev.impact_score.toFixed(1);
                 return '<div class="entity-event-row" onclick="location.href=\'/event/' + ev.id + '\'">' +
                     '<span class="ee-score">' + evIcon + ' ' + evScore + '</span>' +
-                    '<span class="ee-title">' + escapeHtml(ev.title) + '</span>' +
-                    '<span class="ee-action">→ ' + escapeHtml(ev.action || '') + '</span>' +
+                    '<span class="ee-title">' + escapeHtml(_bilingual(ev.title, ev.title_en, '')) + '</span>' +
+                    '<span class="ee-action">→ ' + escapeHtml(ev.action_en || ev.action || '') + '</span>' +
                     '</div>';
             }).join('');
             html += '</div></div>';
@@ -193,7 +212,7 @@ async function loadPredictions() {
         const predictions = data.predictions || [];
 
         if (!predictions.length) {
-            container.innerHTML = '<div class="loading">暂无未来预测 — 点击 <a href="#" onclick="refreshPredictions(event)" style="color:var(--accent)">刷新预测</a> 生成</div>';
+            container.innerHTML = '<div class="loading">' + _t('no_prediction') + ' — <a href="#" onclick="refreshPredictions(event)" style="color:var(--accent)">' + _t('refresh_prediction') + '</a></div>';
             return;
         }
 
@@ -206,20 +225,21 @@ async function loadPredictions() {
                 '<span class="prediction-rank pr-' + (i + 1) + '">#' + (i + 1) + '</span>' +
                 '<div class="event-info">' +
                 '<div class="event-title-row">' +
-                '<span class="prediction-event-title">' + escapeHtml(p.event_title) + '</span>' +
+                '<span class="prediction-event-title">' + escapeHtml(_bilingual(p.event_title, p.event_title_en, '')) + '</span>' +
                 '<span class="prediction-timeframe">' + escapeHtml(p.timeframe) + '</span>' +
-                '<span class="prediction-prob ' + probClass + '">' + escapeHtml(p.probability_label) + ' ' + Math.round(p.probability * 100) + '%</span>' +
+                '<span class="prediction-prob ' + probClass + '">' + escapeHtml(_bilingual(p.probability_label, p.probability_label_en, '')) + ' ' + Math.round(p.probability * 100) + '%</span>' +
                 '</div>' +
-                '<div class="prediction-scenario">' + escapeHtml(p.scenario) + '</div>' +
-                '<div class="prediction-reasoning">' + escapeHtml(p.reasoning) + '</div>';
+                '<div class="prediction-scenario">' + escapeHtml(_bilingual(p.scenario, p.scenario_en, '')) + '</div>' +
+                '<div class="prediction-reasoning">' + escapeHtml(_bilingual(p.reasoning, p.reasoning_en, '')) + '</div>';
 
             if (hasEntities) {
                 html += '<div class="prediction-entities">';
                 html += entities.map(en => {
                     const dirIcon = en.impact_score > 0 ? '📈' : en.impact_score < 0 ? '📉' : '➖';
-                    const actClass = en.action === '买入' ? 'act-buy' : en.action === '卖出' ? 'act-sell' : 'act-hold';
+                    const enAction = _bilingual(en.action, en.action_en, '');
+                    const actClass = enAction === '买入' || enAction === 'Buy' ? 'act-buy' : enAction === '卖出' || enAction === 'Sell' ? 'act-sell' : 'act-hold';
                     return '<span class="pred-entity-chip ' + actClass + '">' + dirIcon + ' ' +
-                        escapeHtml(en.entity) + ' <small>' + escapeHtml(en.action) + '</small></span>';
+                        escapeHtml(en.entity) + ' <small>' + escapeHtml(enAction) + '</small></span>';
                 }).join('');
                 html += '</div>';
             }
@@ -229,24 +249,24 @@ async function loadPredictions() {
         }).join('');
 
     } catch (_) {
-        container.innerHTML = '<div class="loading">加载预测失败</div>';
+        container.innerHTML = '<div class="loading">' + _t('prediction_load_failed') + '</div>';
     }
 }
 
 window.refreshPredictions = async function(ev) {
     ev.preventDefault();
     const container = document.getElementById('events-list');
-    container.innerHTML = '<div class="loading">正在生成预测...（可能需要 30-60 秒）</div>';
+    container.innerHTML = '<div class="loading">' + _t('generating_prediction') + '</div>';
     try {
         const resp = await fetch('/api/predictions/refresh', {method: 'POST'});
         const data = await resp.json();
         if (data.predictions && data.predictions.length) {
             await loadPredictions();
         } else {
-            container.innerHTML = '<div class="loading">预测生成返回空，请稍后重试</div>';
+            container.innerHTML = '<div class="loading">' + _t('prediction_empty') + '</div>';
         }
     } catch (_) {
-        container.innerHTML = '<div class="loading">预测生成失败，请重试</div>';
+        container.innerHTML = '<div class="loading">' + _t('prediction_failed') + '</div>';
     }
 };
 
@@ -340,37 +360,38 @@ async function loadRegionBar() {
 async function initDetailPage(eventId) {
     const resp = await fetch('/api/events/' + eventId);
     if (resp.status === 404) {
-        document.getElementById('detail-header').innerHTML = '<h2>事件未找到</h2>';
+        document.getElementById('detail-header').innerHTML = '<h2>' + _t('detail_not_found') + '</h2>';
         return;
     }
     const data = await resp.json();
     const e = data.event;
 
     document.getElementById('detail-header').innerHTML =
-        '<h2>' + escapeHtml(e.title_cn || e.title) + '</h2>' +
+        '<h2>' + escapeHtml(_bilingual(e.title_cn, e.title_en, e.title)) + '</h2>' +
         '<div class="detail-meta">' +
-        '<span>来源: ' + escapeHtml(e.source_platform) + '</span>' +
-        '<span>首次出现: ' + formatTime(e.first_seen_at) + '</span>' +
-        '<span>地区: ' + escapeHtml(e.region) + '</span>' +
+        '<span>' + _t('detail_source') + ': ' + escapeHtml(e.source_platform) + '</span>' +
+        '<span>' + _t('detail_first_seen') + ': ' + formatTime(e.first_seen_at) + '</span>' +
+        '<span>' + _t('detail_region') + ': ' + escapeHtml(e.region) + '</span>' +
         '</div>';
 
-    if (e.summary_cn) {
-        document.getElementById('detail-summary').innerHTML = '<p><strong>AI 摘要：</strong>' + escapeHtml(e.summary_cn) + '</p>';
+    const summaryText = _bilingual(e.summary_cn, e.summary_en);
+    if (summaryText) {
+        document.getElementById('detail-summary').innerHTML = '<p><strong>' + _t('detail_ai_summary') + '：</strong>' + escapeHtml(summaryText) + '</p>';
     }
 
-    const impactPoints = parseJsonField(e.impact_points);
+    const impactPoints = parseJsonField(_bilingual(e.impact_points, e.impact_points_en));
     if (impactPoints.length > 0) {
         document.getElementById('detail-impact').innerHTML =
-            '<h3>关键影响</h3>' +
+            '<h3>' + _t('detail_impact') + '</h3>' +
             '<ul class="impact-list">' +
             impactPoints.map(p => '<li>' + escapeHtml(p) + '</li>').join('') +
             '</ul>';
     }
 
-    const personalImpact = parseJsonField(e.personal_impact);
+    const personalImpact = parseJsonField(_bilingual(e.personal_impact, e.personal_impact_en));
     if (personalImpact.length > 0) {
         document.getElementById('detail-impact').innerHTML +=
-            '<h3 style="margin-top:16px">💰 个人财富机会</h3>' +
+            '<h3 style="margin-top:16px">💰 ' + _t('detail_personal_impact') + '</h3>' +
             '<div class="pi-detail-list">' +
             personalImpact.map((p, j) => '<div class="pi-detail-item"><span class="pi-detail-rank">#' + (j + 1) + '</span>' + escapeHtml(p) + '</div>').join('') +
             '</div>';
@@ -380,13 +401,13 @@ async function initDetailPage(eventId) {
     if (entities.length > 0) {
         const sigIcon = (d) => d === 'negative' ? '📉' : d === 'positive' ? '📈' : '➖';
         document.getElementById('detail-impact').innerHTML +=
-            '<h3 style="margin-top:16px">🎯 关联实体影响</h3>' +
+            '<h3 style="margin-top:16px">🎯 ' + _t('detail_entity_impact') + '</h3>' +
             '<div class="entity-detail-list">' +
             entities.map(en => '<div class="entity-detail-item">' +
                 '<span class="ed-name">' + escapeHtml(en.entity || '') + '</span>' +
                 '<span class="ed-type">' + escapeHtml(en.type || '') + '</span>' +
                 '<span class="ed-dir">' + sigIcon(en.direction) + ' ' + escapeHtml(en.direction || 'neutral') + '</span>' +
-                '<span class="ed-action">→ ' + escapeHtml(en.action || '关注') + '</span>' +
+                '<span class="ed-action">→ ' + escapeHtml(_bilingual(en.action, en.action_en, '')) + '</span>' +
                 '</div>').join('') +
             '</div>';
     }
@@ -398,7 +419,7 @@ async function initDetailPage(eventId) {
         chart.setOption({
             tooltip: { trigger: 'axis' },
             xAxis: { type: 'time', axisLabel: { color: '#888' } },
-            yAxis: { type: 'value', name: '热度', axisLabel: { color: '#888' } },
+            yAxis: { type: 'value', name: _t('heat_score'), axisLabel: { color: '#888' } },
             series: [{
                 type: 'line', smooth: true,
                 areaStyle: { color: 'rgba(74,144,217,0.2)' },
@@ -419,7 +440,7 @@ async function initDetailPage(eventId) {
     const related = data.relations || [];
     if (related.length > 0) {
         document.getElementById('related-list').innerHTML = related.map(r =>
-            '<span class="related-tag" onclick="location.href=\'/event/' + r.id + '\'">' + escapeHtml(r.title_cn || r.title) + '</span>'
+            '<span class="related-tag" onclick="location.href=\'/event/' + r.id + '\'">' + escapeHtml(_bilingual(r.title_cn, r.title_en, r.title)) + '</span>'
         ).join('');
     }
 }
@@ -435,7 +456,8 @@ function escapeHtml(str) {
 function formatTime(iso) {
     if (!iso) return '';
     const d = new Date(iso + 'Z');
-    return d.toLocaleString('zh-CN');
+    const locale = window.I18N.getLang() === 'zh' ? 'zh-CN' : 'en-US';
+    return d.toLocaleString(locale);
 }
 
 // --- Init ---

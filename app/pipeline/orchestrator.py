@@ -65,8 +65,8 @@ class PipelineOrchestrator:
             if existing:
                 event_id = existing["id"]
                 conn.execute(
-                    "UPDATE events SET last_updated_at=? WHERE id=?",
-                    [now, event_id]
+                    "UPDATE events SET last_updated_at=?, title_en=CASE WHEN title_en='' THEN ? ELSE title_en END, summary_en=CASE WHEN summary_en='' THEN ? ELSE summary_en END WHERE id=?",
+                    [now, data.get("title_en", ""), data.get("summary_en", ""), event_id]
                 )
             else:
                 event_id = insert_event(conn, {
@@ -77,9 +77,13 @@ class PipelineOrchestrator:
                     "language": data.get("language", "unknown"),
                     "region": data.get("region", "unknown"),
                     "title_cn": data.get("title_cn", ""),
+                    "title_en": data.get("title_en", ""),
                     "summary_cn": data.get("summary_cn", ""),
+                    "summary_en": data.get("summary_en", ""),
                     "impact_points": data.get("impact_points", ""),
+                    "impact_points_en": data.get("impact_points_en", ""),
                     "personal_impact": data.get("personal_impact", ""),
+                    "personal_impact_en": data.get("personal_impact_en", ""),
                     "entities": data.get("entities", ""),
                     "first_seen_at": now,
                     "last_updated_at": now,

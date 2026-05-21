@@ -35,29 +35,31 @@ def build_classification_prompt(events: list[dict]) -> str:
 
     categories_str = ", ".join(c["name"] for c in DEFAULT_CATEGORIES)
 
-    return f"""你是一个全球热点事件分析专家。请处理以下热点事件列表：
+    return f"""你是一个全球热点事件分析专家。请处理以下热点事件列表，同时提供中英文双语分析：
 
 {events_json}
 
 请对每个事件执行以下操作，返回 JSON 数组：
-1. **翻译**：将 title 翻译成中文（title_cn）
-2. **摘要**：用中文写一句简短摘要（summary_cn），30字以内
-3. **影响点**：分析该事件最重要的 3 个影响或新闻价值点（impact_points），每条20字以内
-4. **个人影响**：分析该事件对个人的财富机会和投资影响（personal_impact）。重点关注：可购买的股票/基金、相关概念股、加密货币、行业机会等。每条20字以内，按价值从高到低排列，最多3条。若事件与个人财富无关则返回空数组[]
+1. **翻译**：同时提供中英文标题（title_cn, title_en）
+2. **摘要**：同时提供中英文简短摘要（summary_cn, summary_en），各30字以内
+3. **影响点**：同时提供中英文 3 个关键影响点（impact_points 中文, impact_points_en 英文），每条20字以内
+4. **个人影响**：同时提供中英文个人财富机会分析（personal_impact 中文, personal_impact_en 英文）。重点关注：可购买的股票/基金、相关概念股、加密货币、行业机会等。每条20字以内，按价值从高到低排列，最多3条。若事件与个人财富无关则返回空数组[]
 5. **实体影响**：提取事件中涉及的具名实体（entities）。type 从以下选择：股票、公司、行业、加密货币、ETF、基金、商品、人物、政党、机构、国际组织、国家、产品、品牌。
 
-**重要** — action 必须按实体类型区分：
-- 投资类（股票/公司/行业/加密货币/ETF/基金/商品）→ action 用：买入 / 卖出 / 观望
-- 非投资类（人物/政党/机构/国际组织/国家/产品/品牌）→ action 用：高涨 / 低落 / 平稳
+**重要** — action 必须按实体类型区分，同时提供中英文：
+- 投资类（股票/公司/行业/加密货币/ETF/基金/商品）→ action 用中文：买入/卖出/观望，action_en 用：Buy/Sell/Hold
+- 非投资类（人物/政党/机构/国际组织/国家/产品/品牌）→ action 用中文：高涨/低落/平稳，action_en 用：Rising/Falling/Stable
 
-格式：[{{"entity": "微软", "type": "股票", "impact_score": -0.7, "direction": "negative", "action": "卖出"}}, {{"entity": "特朗普", "type": "人物", "impact_score": -0.5, "direction": "negative", "action": "低落"}}]
+**注意**：entity 请使用英文通用名称（如 "Microsoft", "NVIDIA", "Tesla"），entity_cn 为中文名称。type 也同时提供中英文（type, type_en）。
+
+格式：[{{"entity": "Microsoft", "entity_cn": "微软", "type": "股票", "type_en": "Stock", "impact_score": -0.7, "direction": "negative", "action": "卖出", "action_en": "Sell"}}, {{"entity": "Trump", "entity_cn": "特朗普", "type": "人物", "type_en": "Person", "impact_score": -0.5, "direction": "negative", "action": "低落", "action_en": "Falling"}}]
 impact_score范围-1到1，负值=利空/负面，正值=利好/正面。最多3个实体，若无关则返回空数组[]
-6. **分类**：从以下类别中选择最匹配的 1-2 个：{categories_str}。提供类别名称、slug 和置信度(0-1)
+6. **分类**：从以下类别中选择最匹配的 1-2 个：{categories_str}。提供类别名称、slug 和置信度(0-1)。类别名提供中英文（name, name_en）
 7. **去重判断**：如果此事件与列表中其他事件是同一话题（不同平台报道），在 is_duplicate_of 中填写那个事件的 index，否则填 null
 8. **全球热度评分**：综合评估 global_heat 0-100，考虑跨平台传播和讨论量
 
 返回格式：
-[{{"index": 0, "title_cn": "...", "summary_cn": "...", "impact_points": ["影响1", "影响2", "影响3"], "personal_impact": ["买入SpaceX股票", "关注商业航天ETF", "布局卫星互联网概念股"], "entities": [{{"entity": "SpaceX", "type": "股票", "impact_score": 0.9, "direction": "positive", "action": "买入"}}], "categories": [{{"name": "...", "slug": "...", "confidence": 0.9}}], "is_duplicate_of": null, "global_heat": 85}}]
+[{{"index": 0, "title_cn": "...", "title_en": "...", "summary_cn": "...", "summary_en": "...", "impact_points": ["影响1", "影响2", "影响3"], "impact_points_en": ["Impact 1", "Impact 2", "Impact 3"], "personal_impact": ["买入SpaceX股票", "关注商业航天ETF"], "personal_impact_en": ["Buy SpaceX stock", "Watch commercial space ETF"], "entities": [{{"entity": "SpaceX", "entity_cn": "SpaceX", "type": "股票", "type_en": "Stock", "impact_score": 0.9, "direction": "positive", "action": "买入", "action_en": "Buy"}}], "categories": [{{"name": "...", "name_en": "...", "slug": "...", "confidence": 0.9}}], "is_duplicate_of": null, "global_heat": 85}}]
 
 只返回 JSON 数组，不要有其他文字。"""
 
@@ -76,7 +78,7 @@ def build_prediction_prompt(events: list[dict], entities: list[dict]) -> str:
         ensure_ascii=False, indent=2,
     )
 
-    return f"""你是一位全球投资策略师。你需要基于当前热点事件和实体影响趋势，预测未来可能发生的重大事件及其财富机会。
+    return f"""你是一位全球投资策略师。你需要基于当前热点事件和实体影响趋势，预测未来可能发生的重大事件及其财富机会。请同时提供中英文分析。
 
 当前热点事件（最近24小时）：
 {events_json}
@@ -87,18 +89,18 @@ def build_prediction_prompt(events: list[dict], entities: list[dict]) -> str:
 请从你的知识中找到 **未来1天到1个月内** 将要发生或极可能发生的全球重大事件（如体育赛事、选举、财报季、政策会议、产品发布、行业活动等）。可以结合当前热点中提到的"计划"、"将于"等线索，也可以从你的训练数据中检索已知日程。
 
 对每个事件，给出：
-1. **事件名称** (event_title)：简洁中文描述
-2. **时间窗口** (timeframe)：如 "2026年6月"、"下周"
-3. **预测情景** (scenario)：该事件最可能引发的财富机会，30字以内
-4. **概率标签** (probability_label)：极高 / 较高 / 可能
+1. **事件名称** (event_title 中文, event_title_en 英文)：简洁描述
+2. **时间窗口** (timeframe)：如 "2026年6月"/"June 2026"、"下周"/"Next week"
+3. **预测情景** (scenario 中文, scenario_en 英文)：该事件最可能引发的财富机会，30字以内
+4. **概率标签** (probability_label, probability_label_en)：极高/Very High, 较高/High, 可能/Possible
 5. **概率值** (probability)：0-1，辅助排序用
-6. **推理依据** (reasoning)：结合历史模式说明，如"过去5届世界杯赛前1月，啤酒股平均涨12%"。50字以内
-7. **受影响实体** (entities)：具体的公司/股票/行业/加密货币等，附带投资建议。格式：[{{"entity": "百威英博", "type": "股票", "action": "买入", "impact_score": 0.7}}]。impact_score -1到1
+6. **推理依据** (reasoning 中文, reasoning_en 英文)：结合历史模式说明，如"过去5届世界杯赛前1月，啤酒股平均涨12%"。50字以内
+7. **受影响实体** (entities)：具体的公司/股票/行业/加密货币等，附带中英文投资建议。格式：[{{"entity": "百威英博", "type": "股票", "action": "买入", "action_en": "Buy", "impact_score": 0.7}}]。impact_score -1到1
 8. **财富排名** (wealth_rank)：按财富机会从高到低的序号，从1开始
 
 只返回最值得关注的 5-8 条预测。返回 JSON 数组：
 
-[{{"event_title": "2026世界杯开幕", "timeframe": "2026年6月", "scenario": "啤酒饮料消费股短期上涨", "probability": 0.80, "probability_label": "极高", "reasoning": "过去5届世界杯赛前1月啤酒股平均涨12%，夏季消费旺季叠加赛事效应", "entities": [{{"entity": "百威英博", "type": "股票", "action": "买入", "impact_score": 0.7}}], "wealth_rank": 1}}]
+[{{"event_title": "2026世界杯开幕", "event_title_en": "2026 World Cup Begins", "timeframe": "2026年6月", "scenario": "啤酒饮料消费股短期上涨", "scenario_en": "Beer and beverage stocks expected to rise short-term", "probability": 0.80, "probability_label": "极高", "probability_label_en": "Very High", "reasoning": "过去5届世界杯赛前1月啤酒股平均涨12%，夏季消费旺季叠加赛事效应", "reasoning_en": "Beer stocks averaged +12% one month before the last 5 World Cups, summer consumption boost", "entities": [{{"entity": "百威英博", "type": "股票", "action": "买入", "action_en": "Buy", "impact_score": 0.7}}], "wealth_rank": 1}}]
 
 只返回 JSON 数组，不要有其他文字。"""
 
