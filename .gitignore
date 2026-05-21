@@ -1,6 +1,11 @@
 .env
+.env.local
 __pycache__/
 *.pyc
+.pytest_cache/
 .superpowers/
 .worktrees/
-data/hotspot.db
+data/*.db*
+.claude/
+.claude
+project.txt

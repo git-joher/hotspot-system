@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Hotspot · 全球热点雷达{% endblock %}
+
+{% block content %}
+<main class="dashboard">
+    <section class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="stat-value" id="stat-total">-</div><div class="stat-label">今日热点</div></div>
+        <div class="stat-card"><div class="stat-value rising" id="stat-rising">-</div><div class="stat-label">上升趋势</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-regions">-</div><div class="stat-label">覆盖地区</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-categories">-</div><div class="stat-label">分类数</div></div>
+    </section>
+
+    <div class="main-grid">
+        <section class="events-panel" id="events-panel">
+            <div class="panel-header">
+                <h2>热点排行</h2>
+                <div class="sort-btns">
+                    <button class="sort-btn active" data-sort="heat">热度排序</button>
+                    <button class="sort-btn" data-sort="personal">财富机会</button>
+                    <button class="sort-btn" data-sort="entity">实体影响</button>
+                    <button class="sort-btn" data-sort="source">按来源</button>
+                    <button class="sort-btn" data-sort="time">按时间</button>
+                    <button class="sort-btn" data-sort="prediction">未来预测</button>
+                </div>
+            </div>
+            <div class="events-list" id="events-list">
+                <div class="loading">加载中...</div>
+            </div>
+        </section>
+
+        <aside class="charts-panel">
+            <div class="chart-box"><h3>分类热力分布</h3><div class="chart" id="chart-category-pie"></div></div>
+            <div class="chart-box"><h3>24h 热度走势 Top 5</h3><div class="chart" id="chart-heat-line"></div></div>
+            <div class="chart-box"><h3>地区热点占比</h3><div class="chart" id="chart-region-bar"></div></div>
+        </aside>
+    </div>
+</main>
+{% endblock %}
