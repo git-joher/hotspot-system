@@ -25,18 +25,18 @@
 <body data-base-path="{{ base_path }}">
     <div class="app">
         <header class="topbar">
-            <h1 class="logo"><a href="{{ base_path }}">{{ t('app_name') }}</a></h1>
+            <h1 class="logo"><a href="{{ base_path }}" data-i18n="app_name">{{ t('app_name') }}</a></h1>
             <nav class="tabs" id="time-tabs">
-                <button class="tab active" data-timespan="realtime">{{ t('tab_realtime') }}</button>
-                <button class="tab" data-timespan="hourly">{{ t('tab_hourly') }}</button>
-                <button class="tab" data-timespan="daily">{{ t('tab_daily') }}</button>
+                <button class="tab active" data-timespan="realtime" data-i18n="tab_realtime">{{ t('tab_realtime') }}</button>
+                <button class="tab" data-timespan="hourly" data-i18n="tab_hourly">{{ t('tab_hourly') }}</button>
+                <button class="tab" data-timespan="daily" data-i18n="tab_daily">{{ t('tab_daily') }}</button>
                 <button class="tab" data-timespan="ondemand">⟳</button>
             </nav>
             <div class="topbar-right">
                 <button class="lang-switch" id="lang-switch" onclick="toggleLang()">
                     {% if lang == 'zh' %}EN{% else %}中文{% endif %}
                 </button>
-                <span class="update-time" id="update-time">{{ t('loading') }}</span>
+                <span class="update-time" id="update-time" data-i18n="loading">{{ t('loading') }}</span>
             </div>
         </header>
         {% block content %}{% endblock %}

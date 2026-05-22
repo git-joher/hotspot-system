@@ -4,34 +4,34 @@
 {% block content %}
 <main class="dashboard">
     <section class="stats-row" id="stats-row">
-        <div class="stat-card"><div class="stat-value" id="stat-total">-</div><div class="stat-label">{{ t('today_hotspot') }}</div></div>
-        <div class="stat-card"><div class="stat-value rising" id="stat-rising">-</div><div class="stat-label">{{ t('rising_trend') }}</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-regions">-</div><div class="stat-label">{{ t('regions_covered') }}</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-categories">-</div><div class="stat-label">{{ t('categories_count') }}</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-total">-</div><div class="stat-label" data-i18n="today_hotspot">{{ t('today_hotspot') }}</div></div>
+        <div class="stat-card"><div class="stat-value rising" id="stat-rising">-</div><div class="stat-label" data-i18n="rising_trend">{{ t('rising_trend') }}</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-regions">-</div><div class="stat-label" data-i18n="regions_covered">{{ t('regions_covered') }}</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-categories">-</div><div class="stat-label" data-i18n="categories_count">{{ t('categories_count') }}</div></div>
     </section>
 
     <div class="main-grid">
         <section class="events-panel" id="events-panel">
             <div class="panel-header">
-                <h2>{{ t('hot_ranking') }}</h2>
+                <h2 data-i18n="hot_ranking">{{ t('hot_ranking') }}</h2>
                 <div class="sort-btns">
-                    <button class="sort-btn active" data-sort="heat">{{ t('sort_heat') }}</button>
-                    <button class="sort-btn" data-sort="personal">{{ t('sort_wealth') }}</button>
-                    <button class="sort-btn" data-sort="entity">{{ t('sort_entity') }}</button>
-                    <button class="sort-btn" data-sort="source">{{ t('sort_source') }}</button>
-                    <button class="sort-btn" data-sort="time">{{ t('sort_time') }}</button>
-                    <button class="sort-btn" data-sort="prediction">{{ t('sort_prediction') }}</button>
+                    <button class="sort-btn active" data-sort="heat" data-i18n="sort_heat">{{ t('sort_heat') }}</button>
+                    <button class="sort-btn" data-sort="personal" data-i18n="sort_wealth">{{ t('sort_wealth') }}</button>
+                    <button class="sort-btn" data-sort="entity" data-i18n="sort_entity">{{ t('sort_entity') }}</button>
+                    <button class="sort-btn" data-sort="source" data-i18n="sort_source">{{ t('sort_source') }}</button>
+                    <button class="sort-btn" data-sort="time" data-i18n="sort_time">{{ t('sort_time') }}</button>
+                    <button class="sort-btn" data-sort="prediction" data-i18n="sort_prediction">{{ t('sort_prediction') }}</button>
                 </div>
             </div>
             <div class="events-list" id="events-list">
-                <div class="loading">{{ t('loading') }}</div>
+                <div class="loading" data-i18n="loading">{{ t('loading') }}</div>
             </div>
         </section>
 
         <aside class="charts-panel">
-            <div class="chart-box"><h3>{{ t('chart_category') }}</h3><div class="chart" id="chart-category-pie"></div></div>
-            <div class="chart-box"><h3>{{ t('chart_heat_trend') }}</h3><div class="chart" id="chart-heat-line"></div></div>
-            <div class="chart-box"><h3>{{ t('chart_region') }}</h3><div class="chart" id="chart-region-bar"></div></div>
+            <div class="chart-box"><h3 data-i18n="chart_category">{{ t('chart_category') }}</h3><div class="chart" id="chart-category-pie"></div></div>
+            <div class="chart-box"><h3 data-i18n="chart_heat_trend">{{ t('chart_heat_trend') }}</h3><div class="chart" id="chart-heat-line"></div></div>
+            <div class="chart-box"><h3 data-i18n="chart_region">{{ t('chart_region') }}</h3><div class="chart" id="chart-region-bar"></div></div>
         </aside>
     </div>
 </main>
