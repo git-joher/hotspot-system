@@ -1,6 +1,7 @@
 let currentTimespan = 'realtime';
 let currentSort = 'heat';
 let currentCategory = null;
+let currentDomestic = localStorage.getItem('domestic') === 'true';
 var BASE_PATH = (document.body && document.body.getAttribute('data-base-path')) || '/';
 
 // Pick bilingual field based on current language
@@ -90,6 +91,12 @@ window.toggleLang = function() {
 // Listen for lang changes and re-render
 window.addEventListener('langChange', function() { loadDashboard(); });
 
+// Listen for domestic/global toggle
+window.addEventListener('domesticChange', function(e) {
+    currentDomestic = e.detail.domestic;
+    loadDashboard();
+});
+
 // --- Load dashboard ---
 function loadDashboard() {
     return Promise.all([loadStats(), loadMainList(), loadCharts()]);
@@ -98,9 +105,12 @@ function loadDashboard() {
 // --- Stats ---
 function loadStats() {
     if (window.IS_STATIC && window.__PRELOADED_STATS__) {
-        return Promise.resolve(renderStats(window.__PRELOADED_STATS__));
+        var stats = (currentDomestic && window.__PRELOADED_CN_STATS__) ? window.__PRELOADED_CN_STATS__ : window.__PRELOADED_STATS__;
+        return Promise.resolve(renderStats(stats));
     }
-    return fetch(BASE_PATH + 'api/stats').then(function(r) { return r.json(); }).then(renderStats);
+    var url = BASE_PATH + 'api/stats';
+    if (currentDomestic) url += '?region=CN';
+    return fetch(url).then(function(r) { return r.json(); }).then(renderStats);
 }
 
 function renderStats(data) {
@@ -120,6 +130,13 @@ function loadMainList() {
     } else {
         return loadEvents();
     }
+}
+
+// Get current event pool considering domestic mode
+function _getEventPool() {
+    if (!window.__PRELOADED_EVENTS__) return [];
+    if (currentDomestic) return window.__PRELOADED_EVENTS__.filter(function(e) { return e.region === 'CN'; });
+    return window.__PRELOADED_EVENTS__;
 }
 
 // --- Shared render helpers ---
@@ -205,12 +222,15 @@ function renderEventItem(e, i) {
 function loadEvents() {
     if (window.IS_STATIC && window.__PRELOADED_EVENTS__) {
         var hours = _staticTimespanHours();
-        var events = _filterSortEvents(window.__PRELOADED_EVENTS__, hours, currentSort);
+        var pool = window.__PRELOADED_EVENTS__;
+        if (currentDomestic) pool = pool.filter(function(e) { return e.region === 'CN'; });
+        var events = _filterSortEvents(pool, hours, currentSort);
         renderEventList(events);
         return Promise.resolve();
     }
     var params = new URLSearchParams({ timespan: currentTimespan, sort_by: currentSort, limit: '100' });
     if (currentCategory) params.set('category', currentCategory);
+    if (currentDomestic) params.set('region', 'CN');
     return fetch(BASE_PATH + 'api/events?' + params).then(function(r) { return r.json(); }).then(function(data) {
         renderEventList(data.events || []);
     });
@@ -228,10 +248,23 @@ function renderEventList(events) {
 // --- Entity impact list (entity sort tab) ---
 function loadEntityList() {
     if (window.IS_STATIC && window.__PRELOADED_ENTITIES__) {
-        renderEntityList(window.__PRELOADED_ENTITIES__);
+        var entities = window.__PRELOADED_ENTITIES__;
+        if (currentDomestic) {
+            // Filter entities to only those from CN events
+            var cnEventIds = {};
+            (window.__PRELOADED_EVENTS__ || []).forEach(function(e) {
+                if (e.region === 'CN') cnEventIds[e.id] = true;
+            });
+            entities = entities.filter(function(en) {
+                return (en.events || []).some(function(ev) { return cnEventIds[ev.id]; });
+            });
+        }
+        renderEntityList(entities);
         return Promise.resolve();
     }
-    return fetch(BASE_PATH + 'api/entities?timespan=' + currentTimespan).then(function(r) { return r.json(); }).then(function(data) {
+    var url = BASE_PATH + 'api/entities?timespan=' + currentTimespan;
+    if (currentDomestic) url += '&region=CN';
+    return fetch(url).then(function(r) { return r.json(); }).then(function(data) {
         renderEntityList(data.entities || []);
     });
 }
@@ -300,7 +333,9 @@ function loadPredictions() {
         renderPredictions(window.__PRELOADED_PREDICTIONS__);
         return Promise.resolve();
     }
-    return fetch(BASE_PATH + 'api/predictions').then(function(r) { return r.json(); }).then(function(data) {
+    var url = BASE_PATH + 'api/predictions';
+    if (currentDomestic) url += '?region=CN';
+    return fetch(url).then(function(r) { return r.json(); }).then(function(data) {
         renderPredictions(data.predictions || []);
     }).catch(function() {
         container.innerHTML = '<div class="loading">' + _t('prediction_load_failed') + '</div>';
@@ -390,7 +425,7 @@ function loadCategoryPie() {
 
     if (window.IS_STATIC && window.__PRELOADED_EVENTS__) {
         var catData = {};
-        window.__PRELOADED_EVENTS__.forEach(function(e) {
+        _getEventPool().forEach(function(e) {
             if (e.source_platform) {
                 var mainCat = e.source_platform.split(',')[0];
                 if (!catData[mainCat]) catData[mainCat] = { name: mainCat, count: 0 };
@@ -438,7 +473,7 @@ function loadHeatLine() {
 
     if (window.IS_STATIC && window.__SNAPSHOTS_TOP5__) {
         var snapshotsMap = window.__SNAPSHOTS_TOP5__;
-        var topEvents = _filterSortEvents(window.__PRELOADED_EVENTS__, 720, 'heat').slice(0, 5);
+        var topEvents = _filterSortEvents(_getEventPool(), 720, 'heat').slice(0, 5);
         var series = topEvents.map(function(e) {
             var snaps = snapshotsMap[String(e.id)] || [];
             return {
@@ -488,7 +523,7 @@ function loadRegionBar() {
 
     if (window.IS_STATIC && window.__PRELOADED_EVENTS__) {
         var regions = {};
-        window.__PRELOADED_EVENTS__.forEach(function(e) {
+        _getEventPool().forEach(function(e) {
             var r = e.region || 'unknown';
             regions[r] = (regions[r] || 0) + 1;
         });

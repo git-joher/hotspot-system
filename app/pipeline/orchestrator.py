@@ -33,7 +33,11 @@ class PipelineOrchestrator:
             batch = normalized[i:i + BATCH_SIZE]
             batch_dicts = [e.to_dict() for e in batch]
 
-            llm_results = await self.llm.process_batch(batch_dicts)
+            # Detect majority-CN batch for region-aware LLM prompting
+            cn_count = sum(1 for e in batch if e.region == "CN")
+            batch_region = "CN" if cn_count > len(batch) // 2 else None
+
+            llm_results = await self.llm.process_batch(batch_dicts, region=batch_region)
 
             if not llm_results:
                 llm_results = [{}] * len(batch)

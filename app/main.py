@@ -11,6 +11,7 @@ from app.collectors.github_trending import GitHubTrendingCollector
 from app.collectors.weibo import WeiboCollector
 from app.collectors.zhihu import ZhihuCollector
 from app.collectors.baidu import BaiduCollector
+from app.collectors.chinese_rss import ChineseRSSCollector
 from app.collectors.newsapi import NewsApiCollector
 from app.collectors.reddit import RedditCollector
 from app.collectors.twitter import TwitterCollector
@@ -38,6 +39,7 @@ collectors = [
     WeiboCollector(),
     ZhihuCollector(),
     BaiduCollector(),
+    ChineseRSSCollector(),
     NewsApiCollector(api_key=NEWSAPI_KEY),
     RedditCollector(client_id=REDDIT_CLIENT_ID, client_secret=REDDIT_CLIENT_SECRET),
     TwitterCollector(bearer_token=TWITTER_BEARER_TOKEN),

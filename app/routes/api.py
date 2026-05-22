@@ -24,6 +24,7 @@ async def api_events(
     offset: int = Query(0, ge=0),
     category: str = Query(None),
     source: str = Query(None),
+    region: str = Query(None),
     sort_by: str = Query("heat"),
 ):
     timespan_map = {"realtime": 1, "hourly": 3, "daily": 24}
@@ -32,7 +33,7 @@ async def api_events(
     conn = _get_conn(request)
     events = get_events_by_timespan(
         conn, hours=hours, limit=limit, offset=offset,
-        category_slug=category, source_platform=source, sort_by=sort_by,
+        category_slug=category, source_platform=source, region=region, sort_by=sort_by,
     )
     return {"events": events, "timespan": timespan, "hours": hours}
 
@@ -47,9 +48,9 @@ async def api_event_detail(request: Request, event_id: int):
 
 
 @router.get("/stats")
-async def api_stats(request: Request):
+async def api_stats(request: Request, region: str = Query(None)):
     conn = _get_conn(request)
-    return get_stats(conn)
+    return get_stats(conn, region=region)
 
 
 @router.get("/categories")
@@ -69,11 +70,12 @@ async def api_search(request: Request, q: str = Query(..., min_length=1), limit:
 async def api_entities(
     request: Request,
     timespan: str = Query("realtime"),
+    region: str = Query(None),
 ):
     timespan_map = {"realtime": 1, "hourly": 3, "daily": 24}
     hours = timespan_map.get(timespan, 1)
     conn = _get_conn(request)
-    entities = get_entity_aggregates(conn, hours=hours)
+    entities = get_entity_aggregates(conn, hours=hours, region=region)
     return {"entities": entities, "timespan": timespan}
 
 
@@ -87,22 +89,25 @@ async def api_refresh(request: Request):
 
 
 @router.get("/predictions")
-async def api_get_predictions(request: Request):
+async def api_get_predictions(request: Request, region: str = Query(None)):
     conn = _get_conn(request)
-    return {"predictions": get_predictions(conn)}
+    predictions = get_predictions(conn)
+    # Predictions don't have a region column; filtering happens at refresh time
+    # When region=CN, return all predictions (they were CN-focused if refreshed with CN events)
+    return {"predictions": predictions}
 
 
 @router.post("/predictions/refresh")
-async def api_refresh_predictions(request: Request):
+async def api_refresh_predictions(request: Request, region: str = Query(None)):
     from app.database import get_db as _get_db
     conn = _get_db()
     try:
-        events = get_events_by_timespan(conn, hours=24, limit=50, sort_by="heat")
-        entities = get_entity_aggregates(conn, hours=24)
+        events = get_events_by_timespan(conn, hours=24, limit=50, sort_by="heat", region=region)
+        entities = get_entity_aggregates(conn, hours=24, region=region)
 
         from app.pipeline.llm_processor import LLMProcessor
         llm = LLMProcessor()
-        predictions = await llm.predict_opportunities(events, entities)
+        predictions = await llm.predict_opportunities(events, entities, region=region)
         if predictions:
             replace_predictions(conn, predictions)
             return {"status": "ok", "count": len(predictions), "predictions": get_predictions(conn)}

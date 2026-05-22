@@ -33,6 +33,10 @@
                 <button class="tab" data-timespan="ondemand">⟳</button>
             </nav>
             <div class="topbar-right">
+                <button class="region-toggle" id="region-toggle" onclick="toggleRegion()" style="display:none">
+                    <span id="region-icon">🌏</span>
+                    <span id="region-label" data-i18n="region_global">{{ t('region_global') }}</span>
+                </button>
                 <button class="lang-switch" id="lang-switch" onclick="toggleLang()">
                     {% if lang == 'zh' %}EN{% else %}中文{% endif %}
                 </button>

@@ -206,6 +206,7 @@ def get_events_by_timespan(conn: sqlite3.Connection, hours: int = 24,
                            limit: int = 100, offset: int = 0,
                            category_slug: Optional[str] = None,
                            source_platform: Optional[str] = None,
+                           region: Optional[str] = None,
                            sort_by: str = "heat") -> list[dict]:
     since = (datetime.utcnow() - timedelta(hours=hours)).isoformat()
     query = """
@@ -233,6 +234,9 @@ def get_events_by_timespan(conn: sqlite3.Connection, hours: int = 24,
     if source_platform:
         query += " AND e.source_platform = ?"
         params.append(source_platform)
+    if region:
+        query += " AND e.region = ?"
+        params.append(region)
 
     query += " GROUP BY e.id"
 
@@ -276,21 +280,23 @@ def get_event_with_snapshots(conn: sqlite3.Connection, event_id: int) -> Optiona
     }
 
 
-def get_stats(conn: sqlite3.Connection) -> dict:
+def get_stats(conn: sqlite3.Connection, region: Optional[str] = None) -> dict:
     today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    region_filter = " AND region = ?" if region else ""
     total = conn.execute(
-        "SELECT COUNT(*) as c FROM events WHERE last_updated_at >= ?",
-        [today_start]
+        f"SELECT COUNT(*) as c FROM events WHERE last_updated_at >= ?{region_filter}",
+        [today_start] + ([region] if region else [])
     ).fetchone()["c"]
-    rising = conn.execute("""
-        SELECT COUNT(DISTINCT e.id) as c FROM events e
-        JOIN event_snapshots s ON e.id = s.event_id
-        WHERE s.trend_direction='rising' AND s.snapshot_at >= ?
-    """, [today_start]).fetchone()["c"]
-    region_count = conn.execute("""
-        SELECT COUNT(DISTINCT region) as c FROM events
-        WHERE last_updated_at >= ?
-    """, [today_start]).fetchone()["c"]
+    rising = conn.execute(
+        f"SELECT COUNT(DISTINCT e.id) as c FROM events e "
+        f"JOIN event_snapshots s ON e.id = s.event_id "
+        f"WHERE s.trend_direction='rising' AND s.snapshot_at >= ?{region_filter}",
+        [today_start] + ([region] if region else [])
+    ).fetchone()["c"]
+    region_count = conn.execute(
+        f"SELECT COUNT(DISTINCT region) as c FROM events WHERE last_updated_at >= ?{region_filter}",
+        [today_start] + ([region] if region else [])
+    ).fetchone()["c"]
     cat_count = conn.execute(
         "SELECT COUNT(*) as c FROM categories"
     ).fetchone()["c"]
@@ -321,12 +327,18 @@ def link_events(conn: sqlite3.Connection, event_a_id: int, event_b_id: int,
     conn.commit()
 
 
-def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24) -> list[dict]:
+def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24,
+                           region: Optional[str] = None) -> list[dict]:
     since = (datetime.utcnow() - timedelta(hours=hours)).isoformat()
-    rows = conn.execute("""
+    query = """
         SELECT id, title_cn, title_en, title, entities FROM events
         WHERE last_updated_at >= ? AND entities != '' AND entities != '[]'
-    """, [since]).fetchall()
+    """
+    params = [since]
+    if region:
+        query += " AND region = ?"
+        params.append(region)
+    rows = conn.execute(query, params).fetchall()
 
     import json
     entity_map = {}
@@ -364,7 +376,7 @@ def get_entity_aggregates(conn: sqlite3.Connection, hours: int = 24) -> list[dic
             if entity_cn and entity_cn != name:
                 entity_map[name]["entity_cn"] = entity_cn
             entity_map[name]["type_votes"][ent_type] = entity_map[name]["type_votes"].get(ent_type, 0) + 1
-            score = float(item.get("impact_score", 0))
+            score = float(item.get("impact_score") or 0)
             direction = item.get("direction", "neutral")
             action = item.get("action", "")
             entity_map[name]["total_impact"] += score

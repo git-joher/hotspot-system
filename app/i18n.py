@@ -72,6 +72,8 @@ TRANSLATIONS = {
         "share_twitter": "分享到 X",
         "share_copy_link": "复制链接",
         "share_link_copied": "链接已复制！",
+        "region_global": "全球",
+        "region_domestic": "国内",
     },
     "en": {
         "app_name": "Hotspot · Global Radar",
@@ -141,6 +143,8 @@ TRANSLATIONS = {
         "share_twitter": "Share on X",
         "share_copy_link": "Copy Link",
         "share_link_copied": "Link copied!",
+        "region_global": "Global",
+        "region_domestic": "Domestic",
     },
 }
 

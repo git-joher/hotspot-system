@@ -70,6 +70,7 @@ def _make_collectors():
     from app.collectors.weibo import WeiboCollector
     from app.collectors.zhihu import ZhihuCollector
     from app.collectors.baidu import BaiduCollector
+    from app.collectors.chinese_rss import ChineseRSSCollector
     from app.collectors.newsapi import NewsApiCollector
     from app.collectors.reddit import RedditCollector
     from app.collectors.twitter import TwitterCollector
@@ -83,6 +84,7 @@ def _make_collectors():
         WeiboCollector(),
         ZhihuCollector(),
         BaiduCollector(),
+        ChineseRSSCollector(),
         NewsApiCollector(api_key=NEWSAPI_KEY),
         RedditCollector(client_id=REDDIT_CLIENT_ID, client_secret=REDDIT_CLIENT_SECRET),
         TwitterCollector(bearer_token=TWITTER_BEARER_TOKEN),
@@ -142,6 +144,7 @@ def export_data():
         entities = get_entity_aggregates(conn, hours=720)
         predictions = get_predictions(conn)
         stats = get_stats(conn)
+        cn_stats = get_stats(conn, region="CN")
 
         top5 = get_events_by_timespan(conn, hours=720, limit=5, sort_by="heat")
         top5_snapshots = {}
@@ -150,7 +153,7 @@ def export_data():
             if data and data["snapshots"]:
                 top5_snapshots[str(e["id"])] = data["snapshots"]
 
-        return events, entities, predictions, stats, top5_snapshots
+        return events, entities, predictions, stats, cn_stats, top5_snapshots
     finally:
         conn.close()
 
@@ -231,7 +234,7 @@ def _event_seo_ctx(event, lang="en"):
     return ctx
 
 
-def build_index(events, entities, predictions, stats, top5_snapshots):
+def build_index(events, entities, predictions, stats, cn_stats, top5_snapshots):
     ctx = _seo_ctx("en")
     ctx.update({
         "is_static": True,
@@ -240,6 +243,7 @@ def build_index(events, entities, predictions, stats, top5_snapshots):
         "entities_json": _json_dumps(entities),
         "predictions_json": _json_dumps(predictions),
         "stats_json": _json_dumps(stats),
+        "cn_stats_json": _json_dumps(cn_stats),
         "snapshots_top5_json": _json_dumps(top5_snapshots),
     })
     _render("index.html", ctx, "index.html")
@@ -313,14 +317,14 @@ async def main(skip_collect=False):
     if not skip_collect:
         await collect_and_process()
 
-    events, entities, predictions, stats, top5_snapshots = export_data()
+    events, entities, predictions, stats, cn_stats, top5_snapshots = export_data()
     logger.info(
         "Exported: %d events, %d entities, %d predictions",
         len(events), len(entities), len(predictions),
     )
 
     write_json_files(events, entities, predictions, stats, top5_snapshots)
-    build_index(events, entities, predictions, stats, top5_snapshots)
+    build_index(events, entities, predictions, stats, cn_stats, top5_snapshots)
     build_event_pages(events)
     generate_xml_files(events)
     copy_static()

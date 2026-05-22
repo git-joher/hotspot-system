@@ -5,39 +5,15 @@
   <link>https://git-joher.github.io/hotspot-system</link>
   <description>AI-powered global hotspot aggregation and trend analysis platform, tracking 11+ platforms in real-time with entity impact analysis and future predictions</description>
   <language>en</language>
-  <lastBuildDate>Fri, 22 May 2026 09:06:31 +0000</lastBuildDate>
+  <lastBuildDate>Fri, 22 May 2026 13:57:53 +0000</lastBuildDate>
   <atom:link href="https://git-joher.github.io/hotspot-system/rss" rel="self" type="application/rss+xml"/>
-  
-  <item>
-    <title><![CDATA[Anthropic推出官方Claude Code插件目录]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/230</link>
-    <description><![CDATA[Anthropic官方管理的高质量Claude代码插件集合。]]></description>
-    <pubDate>Fri, 22 May 2026 09:06:31 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/230</guid>
-  </item>
   
   <item>
     <title><![CDATA[微软官方.NET技能库助力AI编程代理]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/233</link>
     <description><![CDATA[微软为AI编程代理提供的.NET和C#技能仓库。]]></description>
-    <pubDate>Fri, 22 May 2026 09:06:31 +0000</pubDate>
+    <pubDate>Fri, 22 May 2026 13:57:53 +0000</pubDate>
     <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/233</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[Chrome DevTools MCP：面向编码智能体的Chrome开发者工具]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/237</link>
-    <description><![CDATA[将Chrome DevTools集成进AI编码代理，实现自动化调试与测试。]]></description>
-    <pubDate>Fri, 22 May 2026 09:07:49 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/237</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[can1357/oh-my-pi]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/240</link>
-    <description><![CDATA[A terminal AI coding agent with hash-anchored edits, LSP, Python, browser, and sub-agents.]]></description>
-    <pubDate>Fri, 22 May 2026 09:09:10 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/240</guid>
   </item>
   
   <item>
@@ -81,6 +57,14 @@
   </item>
   
   <item>
+    <title><![CDATA[法航和空客因2009年空难被判过失杀人罪]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/275</link>
+    <description><![CDATA[法国法院裁定两家公司对造成228人死亡的灾难承担过失杀人责任。]]></description>
+    <pubDate>Fri, 22 May 2026 10:53:24 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/275</guid>
+  </item>
+  
+  <item>
     <title><![CDATA[加沙救援船队活动人士将被以色列驱逐，国际反弹加剧]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/276</link>
     <description><![CDATA[活动人士因拘留待遇引发国际愤怒，已开始离开以色列。]]></description>
@@ -113,19 +97,19 @@
   </item>
   
   <item>
-    <title><![CDATA[保罗·麦卡特尼惊讶于威尔·法瑞尔与查德·史密斯长得如此相似]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/319</link>
-    <description><![CDATA[麦卡特尼对两位名人外貌相似度表示吃惊。]]></description>
-    <pubDate>Fri, 22 May 2026 09:20:46 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/319</guid>
-  </item>
-  
-  <item>
     <title><![CDATA[特朗普称“出生公民权是耻辱”，最高法院即将作出裁决]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/324</link>
     <description><![CDATA[特朗普反对出生公民权，最高法院4月1日听证。]]></description>
     <pubDate>Fri, 22 May 2026 01:42:53 +0000</pubDate>
     <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/324</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[伊朗强化对霍尔木兹海峡的控制主张]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/327</link>
+    <description><![CDATA[伊朗发布地图，声称对超2.2万平方公里航道有武装监督权。]]></description>
+    <pubDate>Fri, 22 May 2026 14:17:05 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/327</guid>
   </item>
   
   <item>
@@ -145,11 +129,11 @@
   </item>
   
   <item>
-    <title><![CDATA[Air France Flight to U.S. Is Diverted to Montreal Over Congolese Passenger Amid Ebola Fears]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/341</link>
-    <description><![CDATA[A passenger from DRC triggers Ebola fears, forcing an Air France flight to U.S. to divert to Montreal.]]></description>
-    <pubDate>Fri, 22 May 2026 09:45:46 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/341</guid>
+    <title><![CDATA[英伟达季度利润同比增3.1倍，AI需求驱动增长]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/369</link>
+    <description><![CDATA[英伟达财报显示净利润同比增3.1倍，数据中心半导体销售强劲。]]></description>
+    <pubDate>Fri, 22 May 2026 10:08:14 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/369</guid>
   </item>
   
   <item>
@@ -161,19 +145,19 @@
   </item>
   
   <item>
+    <title><![CDATA[“不就是不”：格陵兰民众在新美国领事馆外抗议特朗普]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/383</link>
+    <description><![CDATA[美新领事馆启用之际，格陵兰人集会反对特朗普的夺控言论。]]></description>
+    <pubDate>Fri, 22 May 2026 14:14:12 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/383</guid>
+  </item>
+  
+  <item>
     <title><![CDATA[埃隆·马斯克的SpaceX推迟星舰发射]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/386</link>
     <description><![CDATA[SpaceX在宣布创纪录IPO计划后次日推迟星舰发射。]]></description>
     <pubDate>Fri, 22 May 2026 03:28:59 +0000</pubDate>
     <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/386</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[Python 3.15: features that didn&#39;t make the headlines]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/404</link>
-    <description><![CDATA[Overview of practical new features and improvements in Python 3.15 that didn&#39;t hit the headlines.]]></description>
-    <pubDate>Fri, 22 May 2026 08:38:13 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/404</guid>
   </item>
   
   <item>
@@ -185,22 +169,6 @@
   </item>
   
   <item>
-    <title><![CDATA[我们正在测试搜索中的新广告格式并扩大Direct Offers试点]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/418</link>
-    <description><![CDATA[谷歌宣布测试搜索新广告形式，扩大直接优惠试点。]]></description>
-    <pubDate>Fri, 22 May 2026 08:44:44 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/418</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[预测市场谁赢谁输？来自 Polymarket 的证据]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/426</link>
-    <description><![CDATA[分析 Polymarket 上预测市场用户的盈亏实证。]]></description>
-    <pubDate>Fri, 22 May 2026 08:46:10 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/426</guid>
-  </item>
-  
-  <item>
     <title><![CDATA[Chewing gum restores dad&#39;s taste and smell years after Covid]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/430</link>
     <description><![CDATA[Chewing gum unexpectedly restores long-lost taste and smell after Covid.]]></description>
@@ -209,11 +177,27 @@
   </item>
   
   <item>
+    <title><![CDATA[Apple cofounder Steve Wozniak got cheers, not boos, after telling students they &#39;all have AI — actual intelligence&#39;]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/449</link>
+    <description><![CDATA[Wozniak humorously encouraged students to trust their own intelligence, winning cheers.]]></description>
+    <pubDate>Fri, 22 May 2026 12:01:35 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/449</guid>
+  </item>
+  
+  <item>
     <title><![CDATA[Musk&#39;s SpaceX postpones Starship launch as mega share sale looms]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/450</link>
     <description><![CDATA[SpaceX delays Starship test flight, plans record-breaking IPO debut.]]></description>
-    <pubDate>Fri, 22 May 2026 09:32:11 +0000</pubDate>
+    <pubDate>Fri, 22 May 2026 14:15:45 +0000</pubDate>
     <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/450</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[米 イラン “隔たり縮まるも核開発や海峡管理が依然争点”報道]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/452</link>
+    <description><![CDATA[US-Iran talks narrow gaps but uranium enrichment, Hormuz Strait management stay contested; Trump opposes tolls.]]></description>
+    <pubDate>Fri, 22 May 2026 11:09:28 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/452</guid>
   </item>
   
   <item>
@@ -225,27 +209,91 @@
   </item>
   
   <item>
-    <title><![CDATA[美国教育体系走向衰败的完美理由]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/462</link>
-    <description><![CDATA[Reddit热议美国教育系统问题与衰败根源。]]></description>
-    <pubDate>Fri, 22 May 2026 09:12:52 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/462</guid>
+    <title><![CDATA[《斯蒂芬·科尔伯特晚间秀》终场：科尔伯特与保罗·麦卡特尼合唱，家人和工作人员上台，保罗关灯告别]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/484</link>
+    <description><![CDATA[《斯蒂芬晚间秀》落幕，科尔伯特与麦卡特尼合唱经典，温情告别。]]></description>
+    <pubDate>Fri, 22 May 2026 12:03:11 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/484</guid>
   </item>
   
   <item>
     <title><![CDATA[美海军负责人称因伊朗战争暂停140亿美元对台军售]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/485</link>
     <description><![CDATA[美国参议员透露对台军售暂缓，优先保障伊朗冲突所需弹药。]]></description>
-    <pubDate>Fri, 22 May 2026 09:25:53 +0000</pubDate>
+    <pubDate>Fri, 22 May 2026 14:10:43 +0000</pubDate>
     <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/485</guid>
   </item>
   
   <item>
-    <title><![CDATA[《斯蒂芬·科尔伯特晚间秀》终场：科尔伯特与保罗·麦卡特尼合唱，家人和工作人员上台，保罗关灯告别]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/484</link>
-    <description><![CDATA[《斯蒂芬晚间秀》落幕，科尔伯特与麦卡特尼合唱经典，温情告别。]]></description>
-    <pubDate>Fri, 22 May 2026 09:25:53 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/484</guid>
+    <title><![CDATA[北约秘书长欢迎美国向波兰增派5000名士兵]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/497</link>
+    <description><![CDATA[特朗普宣布增兵决定，北约外长会议前夕释放团结信号。]]></description>
+    <pubDate>Fri, 22 May 2026 14:08:59 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/497</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[Before Europe Anoints Someone to Talk to Putin, It Debates What to Talk About]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/501</link>
+    <description><![CDATA[Europe considers Ukraine peace envoy but struggles to unify its stance.]]></description>
+    <pubDate>Fri, 22 May 2026 14:18:15 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/501</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[yt-dlp/yt-dlp]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/512</link>
+    <description><![CDATA[A feature-rich command-line tool for downloading video and audio from various platforms.]]></description>
+    <pubDate>Fri, 22 May 2026 13:59:27 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/512</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[A woman cries after being caned during a public punishment for violating sharia law in Indonesia]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/515</link>
+    <description><![CDATA[Woman publicly caned under sharia law in Indonesia, sparking outrage.]]></description>
+    <pubDate>Fri, 22 May 2026 14:02:18 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/515</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[Car gets pushed like a toy.]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/518</link>
+    <description><![CDATA[Car tossed around by extreme weather, highlighting nature&#39;s force.]]></description>
+    <pubDate>Fri, 22 May 2026 14:00:01 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/518</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[In Alabama, McDonald&#39;s and other businesses can &#39;rent&#39; prison inmates...]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/529</link>
+    <description><![CDATA[McDonald&#39;s and others use cheap inmate labor, sparking exploitation controversy and human rights criticism.]]></description>
+    <pubDate>Fri, 22 May 2026 14:07:05 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/529</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[《命运/冠位指定》联动预告片发布，远坂凛与吉尔伽美什登场 | 4.3版本特别节目]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/549</link>
+    <description><![CDATA[《Fate/stay night》联动预告发布，远坂凛和吉尔伽美什登场，4.3版本特别节目播出。]]></description>
+    <pubDate>Fri, 22 May 2026 14:04:59 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/549</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[我告诉怀孕的姐姐她即将嫁给一个她多年来警告我远离的那种男人，我错了吗？]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/550</link>
+    <description><![CDATA[发帖人质问是否做错，因指出姐姐的未婚夫与她曾警告过的类型一样。]]></description>
+    <pubDate>Fri, 22 May 2026 14:04:59 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/550</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[加沙船队活动人士遭以色列驱逐，待遇问题引发强烈反弹]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/328</link>
+    <description><![CDATA[活动人士被绑手跪地遭以部长嘲笑，视频引众怒。]]></description>
+    <pubDate>Fri, 22 May 2026 14:17:05 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/328</guid>
   </item>
   
   <item>
@@ -265,6 +313,30 @@
   </item>
   
   <item>
+    <title><![CDATA[odoo/odoo]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/509</link>
+    <description><![CDATA[Odoo open-source business apps to grow your business.]]></description>
+    <pubDate>Fri, 22 May 2026 13:57:53 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/509</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[她因说出真相而被捕？]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/526</link>
+    <description><![CDATA[网帖质疑一位女性遭遇逮捕的原因，疑似因其披露真相而引发言论自由争议。]]></description>
+    <pubDate>Fri, 22 May 2026 11:58:37 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/526</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[Valorant新反作弊更新让作弊者电脑变砖，拳头回应：“恭喜你获得6000美元镇纸”]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/553</link>
+    <description><![CDATA[《无畏契约》Vanguard更新损坏作弊者高端电脑，官方嘲讽引发争议。]]></description>
+    <pubDate>Fri, 22 May 2026 14:07:05 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/553</guid>
+  </item>
+  
+  <item>
     <title><![CDATA[我们忙于赚取微薄工资和纳税，而司法部长刚刚豁免特朗普永远不必再纳税]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/271</link>
     <description><![CDATA[网络热议美国司法部长豁免特朗普纳税义务的传闻。]]></description>
@@ -273,35 +345,11 @@
   </item>
   
   <item>
-    <title><![CDATA[Apple cofounder Steve Wozniak got cheers, not boos, after telling students they &#39;all have AI — actual intelligence&#39;]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/449</link>
-    <description><![CDATA[Wozniak humorously encouraged students to trust their own intelligence, winning cheers.]]></description>
-    <pubDate>Fri, 22 May 2026 09:12:52 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/449</guid>
-  </item>
-  
-  <item>
     <title><![CDATA[他们全都变成了帅哥章鱼哥。]]></title>
     <link>https://git-joher.github.io/hotspot-system/event/258</link>
     <description><![CDATA[多人变帅引发海绵宝宝章鱼哥梗的热潮。]]></description>
     <pubDate>Thu, 21 May 2026 14:09:17 +0000</pubDate>
     <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/258</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[受Andrej Karpathy启发改进Claude Code行为的技能文件]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/232</link>
-    <description><![CDATA[源自Karpathy对LLM编程陷阱的观察，一个文件优化Claude行为。]]></description>
-    <pubDate>Fri, 22 May 2026 09:06:31 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/232</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[CLI-Anything：让所有软件成为智能体原生]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/235</link>
-    <description><![CDATA[该工具通过命令行让任何软件都能被AI代理操作，推动代理生态进化。]]></description>
-    <pubDate>Fri, 22 May 2026 09:07:49 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/235</guid>
   </item>
   
   <item>
@@ -318,6 +366,22 @@
     <description><![CDATA[美联储纪要显示，因伊朗局势，通胀回落至2%或需更久，降息延后。]]></description>
     <pubDate>Fri, 22 May 2026 02:37:37 +0000</pubDate>
     <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/373</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[From General to Governor: Putin Pushes a ‘New Elite’ of War Veterans]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/502</link>
+    <description><![CDATA[Putin replaces elected regional heads with military commanders as rewards.]]></description>
+    <pubDate>Fri, 22 May 2026 14:18:15 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/502</guid>
+  </item>
+  
+  <item>
+    <title><![CDATA[美国会入侵古巴吗？三种可能场景分析]]></title>
+    <link>https://git-joher.github.io/hotspot-system/event/498</link>
+    <description><![CDATA[特朗普政府不断对古巴共产党政权施加极压经济措施。]]></description>
+    <pubDate>Fri, 22 May 2026 14:15:45 +0000</pubDate>
+    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/498</guid>
   </item>
   
   <item>
@@ -342,70 +406,6 @@
     <description><![CDATA[Germany charges two men for allegedly plotting to kill Jewish leaders for Iran.]]></description>
     <pubDate>Fri, 22 May 2026 09:45:46 +0000</pubDate>
     <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/343</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[antoinezambelli/forge]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/241</link>
-    <description><![CDATA[A Python framework for multi-step agentic workflows with self-hosted LLMs.]]></description>
-    <pubDate>Fri, 22 May 2026 09:09:10 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/241</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[特朗普宣布美国将再向波兰增派5000名士兵]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/385</link>
-    <description><![CDATA[五角大楼取消部署后一周，特朗普公布增兵计划。]]></description>
-    <pubDate>Fri, 22 May 2026 09:32:11 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/385</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[美最早公开同性恋身份前国会议员巴尼·弗兰克逝世]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/288</link>
-    <description><![CDATA[他在国会任职数十年后，于缅因州家中去世。]]></description>
-    <pubDate>Thu, 21 May 2026 14:32:34 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/288</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[我挣得比男友多，今晚他让所有人都知道了]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/379</link>
-    <description><![CDATA[女性收入高于男友引发公开抱怨，凸显两性收入差距问题。]]></description>
-    <pubDate>Fri, 22 May 2026 09:25:53 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/379</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[卡尔·萨根生前最后一年接受查理·罗斯采访：&#39;我们建立了一个基于科技的社会，却没人懂科技。无知与权力的可燃混合物迟早会炸在我们脸上&#39;]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/255</link>
-    <description><![CDATA[萨根生前警示科技社会中的无知危机。]]></description>
-    <pubDate>Thu, 21 May 2026 14:09:17 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/255</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[APEC貿易相会合 きょう中国で開幕へ]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/359</link>
-    <description><![CDATA[Trade ministers from 21 economies meet in China, focusing on free trade and energy stability.]]></description>
-    <pubDate>Fri, 22 May 2026 03:56:17 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/359</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[暖心时刻：老奶奶为滑板少年完美落地欢呼]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/301</link>
-    <description><![CDATA[一位老奶奶看到滑板者完成高难度动作后真诚喝彩，画面温暖人心。]]></description>
-    <pubDate>Fri, 22 May 2026 01:30:53 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/301</guid>
-  </item>
-  
-  <item>
-    <title><![CDATA[CodeGraph：预索引代码知识图谱]]></title>
-    <link>https://git-joher.github.io/hotspot-system/event/231</link>
-    <description><![CDATA[为Claude Code、Cursor等工具节省token和调用的本地知识图谱。]]></description>
-    <pubDate>Fri, 22 May 2026 09:06:31 +0000</pubDate>
-    <guid isPermaLink="true">https://git-joher.github.io/hotspot-system/event/231</guid>
   </item>
   
 </channel>

@@ -66,6 +66,29 @@ a:hover { text-decoration: underline; }
 }
 .lang-switch:hover { color: var(--text); border-color: var(--accent); }
 
+/* Region toggle (domestic/global) */
+.region-toggle {
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 6px;
+}
+.region-toggle:hover { color: var(--text); border-color: var(--accent); }
+.region-toggle.active {
+    background: rgba(222, 41, 16, 0.15);
+    border-color: #de2910;
+    color: #de2910;
+}
+
 /* Stats row */
 .stats-row {
     display: grid;

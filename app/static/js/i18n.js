@@ -14,6 +14,13 @@ window.I18N = (function() {
         localStorage.setItem('lang', l);
         document.documentElement.lang = l;
         refreshStaticI18n();
+        updateRegionUI();
+        // Reset domestic mode when switching away from Chinese
+        if (l !== 'zh' && localStorage.getItem('domestic') === 'true') {
+            localStorage.setItem('domestic', 'false');
+            updateRegionUI();
+            window.dispatchEvent(new CustomEvent('domesticChange', { detail: { domestic: false } }));
+        }
         window.dispatchEvent(new CustomEvent('langChange', { detail: { lang: l } }));
     }
 
@@ -32,15 +39,42 @@ window.I18N = (function() {
         if (btn) btn.textContent = lang === 'zh' ? 'EN' : '中文';
     }
 
-    // Run on page load
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', refreshStaticI18n);
-    } else {
-        refreshStaticI18n();
+    // Update region toggle visibility and state
+    function updateRegionUI() {
+        var btn = document.getElementById('region-toggle');
+        if (!btn) return;
+        var isChinese = lang === 'zh';
+        var isDomestic = localStorage.getItem('domestic') === 'true';
+        btn.style.display = isChinese ? 'inline-flex' : 'none';
+        var icon = document.getElementById('region-icon');
+        var label = document.getElementById('region-label');
+        if (icon) icon.textContent = isDomestic ? '🇨🇳' : '🌏';
+        if (label) label.textContent = isDomestic ? (dict['zh'] && dict['zh']['region_domestic'] || '国内') : (dict[lang] && dict[lang]['region_global'] || 'Global');
+        btn.classList.toggle('active', isDomestic);
     }
 
-    return { t, setLang, getLang, refreshStaticI18n };
+    // Run on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshStaticI18n();
+            updateRegionUI();
+        });
+    } else {
+        refreshStaticI18n();
+        updateRegionUI();
+    }
+
+    return { t, setLang, getLang, refreshStaticI18n, updateRegionUI };
 })();
 
 // Convenience alias
 function _t(key) { return window.I18N.t(key); }
+
+// Region toggle — exposed globally for onclick
+function toggleRegion() {
+    var isDomestic = localStorage.getItem('domestic') === 'true';
+    var newVal = isDomestic ? 'false' : 'true';
+    localStorage.setItem('domestic', newVal);
+    if (window.I18N.updateRegionUI) window.I18N.updateRegionUI();
+    window.dispatchEvent(new CustomEvent('domesticChange', { detail: { domestic: newVal === 'true' } }));
+}

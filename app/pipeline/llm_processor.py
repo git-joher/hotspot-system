@@ -25,7 +25,7 @@ DEFAULT_CATEGORIES = [
 ]
 
 
-def build_classification_prompt(events: list[dict]) -> str:
+def build_classification_prompt(events: list[dict], region: str = None) -> str:
     events_json = json.dumps(
         [{"index": i, "title": e["title"], "description": e.get("description", "")[:200],
           "source_platform": e["source_platform"], "language": e["language"]}
@@ -35,7 +35,18 @@ def build_classification_prompt(events: list[dict]) -> str:
 
     categories_str = ", ".join(c["name"] for c in DEFAULT_CATEGORIES)
 
-    return f"""你是一个全球热点事件分析专家。请处理以下热点事件列表，同时提供中英文双语分析：
+    cn_extra = ""
+    if region == "CN":
+        cn_extra = """
+**中国大陆市场特别关注**：
+- 实体提取时优先识别A股上市公司（使用股票代码格式 "600519.SH" / "000858.SZ"）
+- 关注A股板块：银行、券商、白酒、新能源、半导体、医药、房地产
+- 政策影响是核心驱动力——识别相关政策领域：财政政策、货币政策、产业政策、监管政策
+- 财富机会重点围绕A股、港股通、科创板、北交所
+"""
+
+    return f"""你是一个全球热点事件分析专家。请处理以下热点事件列表，同时提供中英文双语分析：{cn_extra}
+
 
 {events_json}
 
@@ -64,7 +75,7 @@ impact_score范围-1到1，负值=利空/负面，正值=利好/正面。最多3
 只返回 JSON 数组，不要有其他文字。"""
 
 
-def build_prediction_prompt(events: list[dict], entities: list[dict]) -> str:
+def build_prediction_prompt(events: list[dict], entities: list[dict], region: str = None) -> str:
     events_json = json.dumps(
         [{"title_cn": e.get("title_cn", ""), "title": e.get("title", ""),
           "summary_cn": e.get("summary_cn", ""), "source_platform": e.get("source_platform", "")}
@@ -78,7 +89,17 @@ def build_prediction_prompt(events: list[dict], entities: list[dict]) -> str:
         ensure_ascii=False, indent=2,
     )
 
-    return f"""你是一位全球投资策略师。你需要基于当前热点事件和实体影响趋势，预测未来可能发生的重大事件及其财富机会。请同时提供中英文分析。
+    cn_extra = ""
+    if region == "CN":
+        cn_extra = """
+**聚焦中国大陆市场预测**：
+- A股市场的财报季、政策会议、经济数据发布
+- 中国政府部门公告：国务院、央行、证监会、发改委
+- 国内行业事件：新能源补贴政策、房地产政策、科技自主创新
+"""
+
+    return f"""你是一位全球投资策略师。你需要基于当前热点事件和实体影响趋势，预测未来可能发生的重大事件及其财富机会。请同时提供中英文分析。{cn_extra}
+
 
 当前热点事件（最近24小时）：
 {events_json}
@@ -129,11 +150,11 @@ class LLMProcessor:
         )
         self.model = model or LLM_MODEL
 
-    async def process_batch(self, events: list[dict]) -> list[dict]:
+    async def process_batch(self, events: list[dict], region: str = None) -> list[dict]:
         if not events or not getattr(self.client, 'api_key', None):
             return []
 
-        prompt = build_classification_prompt(events)
+        prompt = build_classification_prompt(events, region=region)
 
         try:
             response = await self.client.chat.completions.create(
@@ -153,11 +174,12 @@ class LLMProcessor:
             return []
 
     async def predict_opportunities(self, events: list[dict],
-                                     entities: list[dict]) -> list[dict]:
+                                     entities: list[dict],
+                                     region: str = None) -> list[dict]:
         if not events or not getattr(self.client, 'api_key', None):
             return []
 
-        prompt = build_prediction_prompt(events, entities)
+        prompt = build_prediction_prompt(events, entities, region=region)
 
         try:
             response = await self.client.chat.completions.create(
