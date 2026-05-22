@@ -67,6 +67,11 @@ TRANSLATIONS = {
         "prob_possible": "可能",
         "back": "返回",
         "heat_score": "热度",
+        "site_description": "AI驱动的全球热点聚合与趋势分析平台，实时追踪11+平台热点，提供实体影响分析与未来预测",
+        "site_keywords": "热点,热搜,趋势,新闻聚合,AI分析,全球热点,投资情报,实体影响,未来预测",
+        "share_twitter": "分享到 X",
+        "share_copy_link": "复制链接",
+        "share_link_copied": "链接已复制！",
     },
     "en": {
         "app_name": "Hotspot · Global Radar",
@@ -131,6 +136,11 @@ TRANSLATIONS = {
         "prob_possible": "Possible",
         "back": "Back",
         "heat_score": "Heat",
+        "site_description": "AI-powered global hotspot aggregation and trend analysis platform, tracking 11+ platforms in real-time with entity impact analysis and future predictions",
+        "site_keywords": "hotspot,trending,news aggregation,AI analysis,global trends,investment intelligence,entity impact,future predictions",
+        "share_twitter": "Share on X",
+        "share_copy_link": "Copy Link",
+        "share_link_copied": "Link copied!",
     },
 }
 

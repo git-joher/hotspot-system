@@ -3,15 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ t('app_name') }}{% endblock %}</title>
+    <title>{% block title %}{{ meta_title }}{% endblock %}</title>
+    <meta name="description" content="{{ meta_description }}">
+    <meta name="keywords" content="{{ meta_keywords }}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta property="og:title" content="{{ og_title }}">
+    <meta property="og:description" content="{{ og_description }}">
+    <meta property="og:type" content="{{ og_type }}">
+    <meta property="og:url" content="{{ og_url }}">
+    <meta property="og:locale" content="{{ og_locale }}">
+    <meta property="og:site_name" content="{{ t('app_name') }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ og_title }}">
+    <meta name="twitter:description" content="{{ og_description }}">
+    <script type="application/ld+json">{{ website_schema | tojson }}</script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{{ base_path }}static/css/style.css">
     {% block head %}{% endblock %}
 </head>
-<body>
+<body data-base-path="{{ base_path }}">
     <div class="app">
         <header class="topbar">
-            <h1 class="logo"><a href="/">{{ t('app_name') }}</a></h1>
+            <h1 class="logo"><a href="{{ base_path }}">{{ t('app_name') }}</a></h1>
             <nav class="tabs" id="time-tabs">
                 <button class="tab active" data-timespan="realtime">{{ t('tab_realtime') }}</button>
                 <button class="tab" data-timespan="hourly">{{ t('tab_hourly') }}</button>
@@ -30,8 +44,8 @@
     <script>
         window.I18N_DATA = {{ i18n_data | tojson }};
     </script>
-    <script src="/static/js/i18n.js"></script>
-    <script src="/static/js/dashboard.js"></script>
+    <script src="{{ base_path }}static/js/i18n.js"></script>
+    <script src="{{ base_path }}static/js/dashboard.js"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

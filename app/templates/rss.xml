@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>{{ name }}</title>
+  <link>{{ site_url }}</link>
+  <description>{{ description }}</description>
+  <language>{{ lang }}</language>
+  <lastBuildDate>{% if events %}{{ events[0].last_updated_at | rfc2822 }}{% endif %}</lastBuildDate>
+  <atom:link href="{{ site_url }}/rss" rel="self" type="application/rss+xml"/>
+  {% for event in events %}
+  <item>
+    <title><![CDATA[{% if event.title_cn %}{{ event.title_cn }}{% else %}{{ event.title }}{% endif %}]]></title>
+    <link>{{ site_url }}/event/{{ event.id }}</link>
+    <description><![CDATA[{% if event.summary_cn %}{{ event.summary_cn }}{% elif event.summary_en %}{{ event.summary_en }}{% else %}{{ event.description }}{% endif %}]]></description>
+    <pubDate>{{ event.last_updated_at | rfc2822 }}</pubDate>
+    <guid isPermaLink="true">{{ site_url }}/event/{{ event.id }}</guid>
+  </item>
+  {% endfor %}
+</channel>
+</rss>

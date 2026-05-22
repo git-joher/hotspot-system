@@ -1,9 +1,34 @@
 {% extends "base.html" %}
-{% block title %}{{ t('app_name') }}{% endblock %}
+{% block title %}{{ meta_title }}{% endblock %}
+
+{% block head %}
+{% if newsarticle_schema %}
+<script type="application/ld+json">{{ newsarticle_schema | tojson }}</script>
+{% endif %}
+{% if is_static and event_json %}
+<script>
+window.IS_STATIC = true;
+window.__EVENT_DATA__ = {{ event_json | safe }};
+</script>
+{% endif %}
+{% endblock %}
 
 {% block content %}
 <main class="detail" id="detail-page">
-    <a href="/" class="back-link">← {{ t('back') }}</a>
+    <a href="{{ base_path }}" class="back-link">&larr; {{ t('back') }}</a>
+
+    <div class="share-toolbar">
+        <button class="share-btn share-twitter" onclick="shareTwitter()" title="{{ t('share_twitter') }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            {{ t('share_twitter') }}
+        </button>
+        <button class="share-btn share-copy" onclick="shareCopyLink()" title="{{ t('share_copy_link') }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            {{ t('share_copy_link') }}
+        </button>
+        <span class="share-tooltip" id="share-tooltip">{{ t('share_link_copied') }}</span>
+    </div>
+
     <div class="detail-header" id="detail-header">
         <span class="spinner">{{ t('loading') }}</span>
     </div>
@@ -16,11 +41,27 @@
     <div class="related-box" id="related-box"><h3>{{ t('detail_related') }}</h3><div id="related-list"></div></div>
 </main>
 {% endblock %}
+
 {% block scripts %}
 <script>
 (function() {
-    const eventId = {{ event_id }};
+    var eventId = {{ event_id }};
     if (eventId) { initDetailPage(eventId); }
 })();
+
+function shareTwitter() {
+    var title = document.querySelector('meta[property="og:title"]').getAttribute('content');
+    var url = document.querySelector('meta[property="og:url"]').getAttribute('content');
+    window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(title) + '&url=' + encodeURIComponent(url), '_blank', 'width=600,height=400');
+}
+
+function shareCopyLink() {
+    var url = document.querySelector('meta[property="og:url"]').getAttribute('content');
+    navigator.clipboard.writeText(url).then(function() {
+        var tip = document.getElementById('share-tooltip');
+        tip.classList.add('visible');
+        setTimeout(function() { tip.classList.remove('visible'); }, 2000);
+    });
+}
 </script>
 {% endblock %}

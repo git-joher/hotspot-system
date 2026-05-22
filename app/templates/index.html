@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ t('app_name') }}{% endblock %}
+{% block title %}{{ meta_title }}{% endblock %}
 
 {% block content %}
 <main class="dashboard">
@@ -35,4 +35,17 @@
         </aside>
     </div>
 </main>
+{% endblock %}
+
+{% block scripts %}
+{% if is_static %}
+<script>
+window.IS_STATIC = true;
+window.__PRELOADED_EVENTS__ = {{ events_json | safe }};
+window.__PRELOADED_STATS__ = {{ stats_json | safe }};
+window.__PRELOADED_ENTITIES__ = {{ entities_json | safe }};
+window.__PRELOADED_PREDICTIONS__ = {{ predictions_json | safe }};
+window.__SNAPSHOTS_TOP5__ = {{ snapshots_top5_json | safe }};
+</script>
+{% endif %}
 {% endblock %}

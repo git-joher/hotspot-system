@@ -24,3 +24,6 @@ NEWSAPI_KEY = os.getenv("NEWSAPI_KEY", "")
 COLLECTION_INTERVAL_FAST = 15  # minutes
 COLLECTION_INTERVAL_SLOW = 60  # minutes
 SNAPSHOT_RETENTION_DAYS = 30
+
+# Site URL (for canonical URLs, sitemaps, RSS, Open Graph)
+SITE_URL = os.getenv("SITE_URL", "http://localhost:8000")
