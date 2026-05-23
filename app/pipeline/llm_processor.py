@@ -98,8 +98,17 @@ def build_prediction_prompt(events: list[dict], entities: list[dict], region: st
 - 国内行业事件：新能源补贴政策、房地产政策、科技自主创新
 """
 
-    return f"""你是一位全球投资策略师。你需要基于当前热点事件和实体影响趋势，预测未来可能发生的重大事件及其财富机会。请同时提供中英文分析。{cn_extra}
+    from datetime import datetime as _dt
+    _today = _dt.utcnow()
+    today_str = _today.strftime("%Y年%m月%d日")
+    today_iso = _today.strftime("%Y-%m-%d")
 
+    return f"""你是一位全球投资策略师。注意：今天是 {today_str}（{today_iso}）。你必须基于当前热点事件中透露的线索，预测 {today_iso} 之后 **未来1天到1个月内** 将要发生的真实事件。{cn_extra}
+
+**关键约束**：
+- 所有预测的时间窗口必须晚于 {today_iso}。严禁生成任何早于该日期的"预测"。
+- 你只能预测：已经在当前热点中被提及的计划/预告事件，或者从当前趋势中合理推断的短期发展。禁止凭空编造历史事件。
+- 如果没有足够线索预测具体事件，可以从当前热点趋势中推断可能的短期市场走势。
 
 当前热点事件（最近24小时）：
 {events_json}
@@ -107,21 +116,19 @@ def build_prediction_prompt(events: list[dict], entities: list[dict], region: st
 当前实体影响趋势（投资信号）：
 {entities_json}
 
-请从你的知识中找到 **未来1天到1个月内** 将要发生或极可能发生的全球重大事件（如体育赛事、选举、财报季、政策会议、产品发布、行业活动等）。可以结合当前热点中提到的"计划"、"将于"等线索，也可以从你的训练数据中检索已知日程。
-
-对每个事件，给出：
+对每个预测，给出：
 1. **事件名称** (event_title 中文, event_title_en 英文)：简洁描述
-2. **时间窗口** (timeframe)：如 "2026年6月"/"June 2026"、"下周"/"Next week"
+2. **时间窗口** (timeframe)：如 "2026年6月"/"June 2026"、"下周"/"Next week"、"3天内"/"Within 3 days"。必须晚于 {today_iso}
 3. **预测情景** (scenario 中文, scenario_en 英文)：该事件最可能引发的财富机会，30字以内
 4. **概率标签** (probability_label, probability_label_en)：极高/Very High, 较高/High, 可能/Possible
-5. **概率值** (probability)：0-1，辅助排序用
-6. **推理依据** (reasoning 中文, reasoning_en 英文)：结合历史模式说明，如"过去5届世界杯赛前1月，啤酒股平均涨12%"。50字以内
-7. **受影响实体** (entities)：具体的公司/股票/行业/加密货币等，附带中英文投资建议。格式：[{{"entity": "百威英博", "type": "股票", "action": "买入", "action_en": "Buy", "impact_score": 0.7}}]。impact_score -1到1
+5. **概率值** (probability)：0-1
+6. **推理依据** (reasoning 中文, reasoning_en 英文)：基于当前热点中的具体线索+历史模式，50字以内
+7. **受影响实体** (entities)：具体的公司/股票/行业/加密货币等，格式：[{{"entity": "Anheuser-Busch", "type": "股票", "action": "买入", "action_en": "Buy", "impact_score": 0.7}}]
 8. **财富排名** (wealth_rank)：按财富机会从高到低的序号，从1开始
 
 只返回最值得关注的 5-8 条预测。返回 JSON 数组：
 
-[{{"event_title": "2026世界杯开幕", "event_title_en": "2026 World Cup Begins", "timeframe": "2026年6月", "scenario": "啤酒饮料消费股短期上涨", "scenario_en": "Beer and beverage stocks expected to rise short-term", "probability": 0.80, "probability_label": "极高", "probability_label_en": "Very High", "reasoning": "过去5届世界杯赛前1月啤酒股平均涨12%，夏季消费旺季叠加赛事效应", "reasoning_en": "Beer stocks averaged +12% one month before the last 5 World Cups, summer consumption boost", "entities": [{{"entity": "百威英博", "type": "股票", "action": "买入", "action_en": "Buy", "impact_score": 0.7}}], "wealth_rank": 1}}]
+[{{"event_title": "...", "event_title_en": "...", "timeframe": "...", "scenario": "...", "scenario_en": "...", "probability": 0.80, "probability_label": "极高", "probability_label_en": "Very High", "reasoning": "...", "reasoning_en": "...", "entities": [...], "wealth_rank": 1}}]
 
 只返回 JSON 数组，不要有其他文字。"""
 
