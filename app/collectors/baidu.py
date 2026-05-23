@@ -28,19 +28,37 @@ class BaiduCollector(BaseCollector):
         results = []
         cards = data.get("data", {}).get("cards", [])
         for card in cards:
-            for item in card.get("content", [])[:50]:
-                word = item.get("word", "") or item.get("query", "")
-                if not word:
+            card_content = card.get("content", [])
+            for item in card_content:
+                # Handle nested structure: wrapper dict with inner 'content' list
+                if isinstance(item, dict) and "content" in item and isinstance(item["content"], list):
+                    inner_items = item["content"]
+                elif isinstance(item, dict) and "word" in item:
+                    inner_items = [item]
+                else:
                     continue
-                results.append(CollectorResult(
-                    title=word,
-                    description=item.get("desc", ""),
-                    url=item.get("url", ""),
-                    source_platform=self.platform,
-                    language="zh",
-                    region="CN",
-                    source_rank=item.get("index", 1),
-                    mention_count=item.get("hotScore", 0) or item.get("heat_score", 0),
-                    raw_data=item,
-                ))
+
+                rank = 0
+                for inner in inner_items:
+                    rank += 1
+                    word = inner.get("word", "") or inner.get("query", "")
+                    if not word:
+                        continue
+                    # Extract hot score from hotTag or hotScore
+                    hot_str = inner.get("hotTag", "") or inner.get("hotScore", "")
+                    try:
+                        hot_score = int(hot_str) if hot_str else 0
+                    except (ValueError, TypeError):
+                        hot_score = 0
+                    results.append(CollectorResult(
+                        title=word,
+                        description=inner.get("desc", ""),
+                        url=inner.get("url", ""),
+                        source_platform=self.platform,
+                        language="zh",
+                        region="CN",
+                        source_rank=inner.get("index", rank),
+                        mention_count=hot_score,
+                        raw_data=inner,
+                    ))
         return results

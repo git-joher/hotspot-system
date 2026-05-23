@@ -5,16 +5,13 @@ from app.collectors.base import BaseCollector, CollectorResult
 
 
 DEFAULT_CN_FEEDS = [
-    # Financial news
-    ("https://feedx.net/rss/sinafinance.xml", "zh", "CN"),
-    ("https://feedx.net/rss/eastmoney.xml", "zh", "CN"),
-    ("https://feedx.net/rss/cls.xml", "zh", "CN"),
-    # Government & policy
-    ("http://www.people.com.cn/rss/politics.xml", "zh", "CN"),
-    ("http://www.xinhuanet.com/politics/xhll.xml", "zh", "CN"),
-    # Securities & regulatory
-    ("https://feedx.net/rss/stcn.xml", "zh", "CN"),
-    ("https://feedx.net/rss/yicai.xml", "zh", "CN"),
+    # People's Daily — authoritative government/party voice
+    ("http://www.people.com.cn/rss/politics.xml", "zh", "CN"),      # 人民日报-政治
+    ("http://www.people.com.cn/rss/finance.xml", "zh", "CN"),       # 人民日报-财经
+    ("http://www.people.com.cn/rss/world.xml", "zh", "CN"),         # 人民日报-国际
+    # China News Service — official state news agency
+    ("https://www.chinanews.com.cn/rss/scroll-news.xml", "zh", "CN"),    # 中国新闻网-要闻
+    ("https://www.chinanews.com.cn/rss/finance.xml", "zh", "CN"),        # 中国新闻网-财经
 ]
 
 
