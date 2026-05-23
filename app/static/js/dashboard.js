@@ -161,6 +161,21 @@ function formatTime(iso) {
     return d.toLocaleString(locale);
 }
 
+function relativeTime(iso) {
+    if (!iso) return '';
+    var now = new Date();
+    var d = new Date(iso + 'Z');
+    var diffMs = now - d;
+    var diffSec = Math.floor(diffMs / 1000);
+    var diffMin = Math.floor(diffSec / 60);
+    var diffHour = Math.floor(diffMin / 60);
+    var diffDay = Math.floor(diffHour / 24);
+    if (diffMin < 1) return _t('time_just_now');
+    if (diffMin < 60) return diffMin + ' ' + _t('time_minutes_ago');
+    if (diffHour < 24) return diffHour + ' ' + _t('time_hours_ago');
+    return diffDay + ' ' + _t('time_days_ago');
+}
+
 function renderEventItem(e, i) {
     var heatClass = e.latest_heat > 80 ? 'high' : e.latest_heat > 50 ? 'mid' : '';
     var rankClass = i < 3 ? 'r' + (i + 1) : (i < 5 ? 'r' + (i + 1) : '');
@@ -211,6 +226,7 @@ function renderEventItem(e, i) {
 
     html += '</div>' +
         '<div class="event-meta">' +
+        '<span class="event-time" title="' + escapeHtml(formatTime(e.last_updated_at)) + '">' + escapeHtml(relativeTime(e.last_updated_at)) + '</span>' +
         '<span class="event-heat ' + heatClass + '">🔥 ' + (e.latest_heat || '-') + '</span>' +
         '<span class="event-platforms">' + (e.related_count || 1) + ' ' + _t('platforms') + '</span>' +
         '</div>' +

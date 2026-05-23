@@ -74,6 +74,10 @@ TRANSLATIONS = {
         "share_link_copied": "链接已复制！",
         "region_global": "全球",
         "region_domestic": "国内",
+        "time_just_now": "刚刚",
+        "time_minutes_ago": "分钟前",
+        "time_hours_ago": "小时前",
+        "time_days_ago": "天前",
     },
     "en": {
         "app_name": "Hotspot · Global Radar",
@@ -145,6 +149,10 @@ TRANSLATIONS = {
         "share_link_copied": "Link copied!",
         "region_global": "Global",
         "region_domestic": "Domestic",
+        "time_just_now": "Just now",
+        "time_minutes_ago": "m ago",
+        "time_hours_ago": "h ago",
+        "time_days_ago": "d ago",
     },
 }
 
